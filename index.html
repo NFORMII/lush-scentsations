@@ -1,0 +1,1118 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>:root{color-scheme:light}body{margin:0}[hidden]{display:none!important}</style></head><body>
+<title>Lush Scentsations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Cinzel:wght@400;500&display=swap">
+<style>
+/* Layout concept: a phone-first storefront where scent is colour. Giant type in the hero, a colour field per fragrance, one inverted band for the birthday gifts, everything else quiet. Photos drop onto the fields later. */
+:root {
+  --bg: #ece9e6; --surface: #f7f5f3; --fg: #1b1518; --muted: #675d61; --line: rgba(27, 21, 24, 0.16);
+  --ink: #1b1518; --on-ink: #f4f0ec; --accent: #ffb02e; --on-accent: #1b1518;
+  --danger: #b3361f; --ok: #22703a; --warn: #8a5a00; --overlay: rgba(20, 12, 10, 0.55);
+  --shadow: 0 30px 60px -30px rgba(27, 21, 24, 0.4); --fl: 42%;
+  --font: 'Archivo', 'Helvetica Neue', Arial, sans-serif; --font-logo: 'Cinzel', Georgia, serif;
+  --grain: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #17100e; --surface: #231915; --fg: #f2eae4; --muted: #a79a94; --line: rgba(242, 234, 228, 0.17);
+    --ink: #f2eae4; --on-ink: #17100e; --accent: #ffb02e; --on-accent: #1b1518;
+    --danger: #ff8a70; --ok: #8fd19e; --warn: #f0c060; --overlay: rgba(0, 0, 0, 0.62);
+    --shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.7); --fl: 62%; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #17100e; --surface: #231915; --fg: #f2eae4; --muted: #a79a94; --line: rgba(242, 234, 228, 0.17);
+  --ink: #f2eae4; --on-ink: #17100e; --accent: #ffb02e; --on-accent: #1b1518;
+  --danger: #ff8a70; --ok: #8fd19e; --warn: #f0c060; --overlay: rgba(0, 0, 0, 0.62);
+  --shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.7); --fl: 62%; color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font); font-weight: 400; font-size: 16px; line-height: 1.5; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+h1, h2, h3, h4, p, ul, ol { margin: 0; padding: 0; }
+ul, ol { list-style: none; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+a { color: inherit; }
+img, svg { max-width: 100%; }
+:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
+.wrap { width: 100%; max-width: 1240px; margin-inline: auto; padding-inline: 20px; }
+.vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+.num { font-variant-numeric: tabular-nums; }
+.display { font-weight: 800; font-stretch: 100%; letter-spacing: -0.035em; line-height: 0.95; text-wrap: balance; }
+
+/* controls */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; padding: 0 24px; border: 1.5px solid var(--ink); border-radius: 999px; background: transparent; color: var(--fg); font-weight: 600; font-size: 0.98rem; text-decoration: none; white-space: nowrap; transition: transform 0.15s, background 0.2s, color 0.2s; }
+.btn svg { width: 20px; height: 20px; flex: none; }
+.btn:hover { background: color-mix(in srgb, var(--fg) 8%, transparent); }
+.btn:active { transform: scale(0.97); }
+.btn.solid { background: var(--ink); color: var(--on-ink); }
+.btn.solid:hover { background: color-mix(in srgb, var(--ink) 88%, var(--accent)); }
+.btn.sm { min-height: 38px; padding: 0 16px; font-size: 0.88rem; }
+.btn.block { width: 100%; }
+.btn[disabled] { opacity: 0.4; cursor: not-allowed; transform: none; }
+.btn.bad { border-color: var(--danger); color: var(--danger); }
+.icon-btn { display: inline-grid; place-items: center; width: 44px; height: 44px; background: transparent; border: none; border-radius: 50%; color: var(--fg); position: relative; }
+.icon-btn:hover { background: color-mix(in srgb, var(--fg) 9%, transparent); }
+.icon-btn svg { width: 22px; height: 22px; }
+.count { position: absolute; top: 4px; right: 2px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--accent); color: var(--on-accent); font-size: 0.72rem; font-weight: 700; display: grid; place-items: center; }
+.chip { border: 1.5px solid var(--line); background: transparent; border-radius: 999px; padding: 0 16px; min-height: 40px; font-weight: 500; font-size: 0.95rem; white-space: nowrap; transition: background 0.15s, border-color 0.15s; }
+.chip:hover { border-color: var(--fg); }
+.chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--on-ink); }
+.field-in { background: var(--surface); border: 1.5px solid var(--line); border-radius: 14px; padding: 0 14px; min-height: 46px; min-width: 0; }
+.field-in:focus { outline: 2px solid var(--fg); outline-offset: 1px; }
+textarea.field-in { padding: 10px 14px; min-height: 80px; resize: vertical; }
+select.field-in { padding-right: 8px; }
+
+/* top ribbon, header */
+.ribbon { display: block; width: 100%; background: var(--accent); color: var(--on-accent); border: none; padding: 9px 20px; font-weight: 600; font-size: 0.9rem; text-align: center; }
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 30; background: color-mix(in srgb, var(--bg) 86%, transparent); backdrop-filter: blur(14px); }
+.bar .wrap { display: flex; align-items: center; gap: 8px; min-height: 64px; }
+.logo { display: flex; align-items: center; gap: 11px; text-decoration: none; margin-right: auto; }
+.logo .mark { width: 24px; height: 36px; color: var(--fg); flex: none; }
+.logo .wm { display: flex; flex-direction: column; gap: 4px; line-height: 1; font-family: var(--font-logo); }
+.logo .wm b { font-weight: 500; font-size: 1.15rem; letter-spacing: 0.3em; }
+.logo .wm i { font-style: normal; font-size: 0.48rem; letter-spacing: 0.44em; color: var(--muted); }
+.seg { display: inline-flex; border: 1.5px solid var(--line); border-radius: 999px; padding: 2px; }
+.seg button { background: transparent; border: none; border-radius: 999px; padding: 0 11px; min-height: 34px; font-weight: 600; font-size: 0.82rem; color: var(--muted); }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--on-ink); }
+.toplinks { display: flex; gap: 2px; }
+.toplinks a { text-decoration: none; font-weight: 500; padding: 10px 14px; border-radius: 999px; font-size: 0.95rem; }
+.toplinks a:hover { background: color-mix(in srgb, var(--fg) 8%, transparent); }
+@media (max-width: 760px) { .toplinks { display: none; } .logo .wm i { display: none; } }
+
+/* hero: the birthday campaign on a saffron stage */
+.hero { background: var(--accent); color: #1b1518; }
+.hero-in { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr); gap: 48px; align-items: center; padding-block: 44px 64px; }
+.hero h1 span { display: block; }
+.hero h1 { font-size: clamp(3.3rem, 8.4vw, 7.4rem); font-weight: 800; font-stretch: 100%; line-height: 0.93; letter-spacing: -0.045em; text-wrap: balance; }
+html[lang="fr"] .hero h1 { font-size: clamp(2.9rem, 6.6vw, 5.8rem); }
+.hero .lede { margin-top: 26px; font-size: clamp(1.1rem, 2.2vw, 1.35rem); line-height: 1.35; font-weight: 500; max-width: 34ch; letter-spacing: 0; }
+.hero .ctas { margin-top: 30px; display: flex; flex-wrap: wrap; gap: 10px; }
+.hero .btn { border-color: #1b1518; color: #1b1518; }
+.hero .btn:hover { background: rgba(27, 21, 24, 0.1); }
+.hero .btn.solid { background: #1b1518; color: #fff; }
+.hero .btn.solid:hover { background: #000; }
+.hero-art { position: relative; justify-self: center; width: min(100%, 470px); }
+.hero-art .frame { border-radius: 30px; box-shadow: 0 40px 60px -30px rgba(60, 20, 0, 0.6); }
+.sticker { position: absolute; left: -18px; bottom: 30px; width: 130px; aspect-ratio: 1; border-radius: 50%; background: #1b1518; color: var(--accent); display: grid; place-items: center; text-align: center; font-weight: 800; font-size: 1.04rem; line-height: 1.05; letter-spacing: -0.02em; transform: rotate(-10deg); padding: 16px; box-shadow: 0 14px 24px -10px rgba(0, 0, 0, 0.5); z-index: 6; }
+@media (max-width: 880px) { .hero-in { grid-template-columns: minmax(0, 1fr); gap: 34px; padding-block: 30px 48px; } .hero h1 { font-size: clamp(3rem, 15.5vw, 6rem); } html[lang="fr"] .hero h1 { font-size: clamp(2.6rem, 12.5vw, 5rem); } .hero-art { width: min(100%, 400px); } .sticker { left: -6px; width: 108px; font-size: 0.9rem; padding: 12px; } }
+
+/* colour fields */
+.field { position: relative; overflow: hidden; isolation: isolate; }
+.field::after { content: ''; position: absolute; inset: 0; background-image: var(--grain); background-size: 180px; opacity: 0.32; mix-blend-mode: overlay; pointer-events: none; z-index: 1; }
+.frame-btn { display: block; width: 100%; padding: 0; border: none; background: none; border-radius: 22px; }
+.frame { display: block; aspect-ratio: 4 / 5; border-radius: 22px; container-type: inline-size; transition: transform 0.35s cubic-bezier(.2, .7, .2, 1); }
+.frame-btn:hover .frame { transform: scale(0.985); }
+/* portrait frames: a generic bottle in focus, soft blurred light behind it */
+.portrait { position: relative; overflow: hidden; isolation: isolate; background: hsl(var(--h) 42% 8%); }
+.portrait .bg { position: absolute; inset: 0; background: radial-gradient(62% 48% at 50% 44%, hsl(var(--h) 78% 40% / 0.9), transparent 74%), radial-gradient(90% 55% at 12% 0%, hsl(calc(var(--h) + 26) 80% 38% / 0.65), transparent 72%), linear-gradient(180deg, hsl(var(--h) 38% 13%) 0%, hsl(var(--h) 45% 6%) 100%); }
+.portrait .bokeh { position: absolute; inset: 0; filter: blur(2.5px); mix-blend-mode: screen; }
+.portrait .bokeh i { position: absolute; border-radius: 50%; aspect-ratio: 1; transform: translate(-50%, -50%); background: radial-gradient(circle, hsl(var(--bh) 96% 70% / var(--bo)) 0 60%, hsl(var(--bh) 96% 70% / calc(var(--bo) * 0.4)) 68%, transparent 73%); }
+.portrait .bokeh i.far { filter: blur(7px); }
+.portrait .table { position: absolute; left: 0; right: 0; bottom: 0; height: 21%; background: linear-gradient(180deg, hsl(var(--h) 30% 14% / 0), hsl(var(--h) 35% 9% / 0.92) 45%); border-top: 1px solid hsl(var(--h) 70% 72% / 0.14); }
+.portrait .vig { position: absolute; inset: 0; background: radial-gradient(120% 100% at 50% 45%, transparent 55%, rgba(0, 0, 0, 0.45)); z-index: 3; pointer-events: none; }
+.portrait::after { content: ''; position: absolute; inset: 0; background-image: var(--grain); background-size: 180px; opacity: 0.2; mix-blend-mode: overlay; pointer-events: none; z-index: 4; }
+.portrait .bottle { position: absolute; left: 50%; bottom: 13%; height: 72%; width: auto; transform: translateX(-50%); z-index: 2; overflow: visible; }
+.portrait.hero-shot .bottle { height: 76%; bottom: 11%; }
+.portrait .cut { position: absolute; left: 12%; bottom: 10%; width: 76%; height: 76%; object-fit: contain; z-index: 2; filter: drop-shadow(0 18px 18px rgba(0, 0, 0, 0.5)); }
+.cap-notes { position: absolute; left: 7cqw; right: 7cqw; bottom: 4cqw; z-index: 5; font-size: max(11px, 5.4cqw); font-weight: 600; color: rgba(255, 255, 255, 0.92); line-height: 1.15; text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5); }
+.tag-badge { position: absolute; top: 10px; z-index: 6; border-radius: 999px; padding: 3px 10px; font-size: 0.78rem; font-weight: 700; }
+.tag-badge.off { left: 10px; background: var(--accent); color: var(--on-accent); }
+.tag-badge.sample { right: 10px; border: 1.5px dashed rgba(255, 255, 255, 0.7); color: #fff; background: rgba(0, 0, 0, 0.2); font-weight: 600; }
+.th { position: relative; }
+.th .frame { border-radius: inherit; }
+.card { min-width: 0; }
+.card .meta { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-top: 12px; }
+.card h3 { font-size: 1.1rem; font-weight: 700; letter-spacing: -0.015em; line-height: 1.15; }
+.card .sub { color: var(--muted); font-size: 0.88rem; margin-top: 2px; }
+.card .price { margin-top: 6px; display: flex; gap: 8px; flex-wrap: wrap; align-items: baseline; font-variant-numeric: tabular-nums; }
+.card .price b { font-weight: 700; }
+.card .price s { color: var(--muted); font-size: 0.86rem; }
+.card .low { color: var(--warn); font-size: 0.82rem; font-weight: 500; }
+.plus { flex: none; width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--ink); background: transparent; display: grid; place-items: center; transition: background 0.15s, color 0.15s, transform 0.15s; }
+.plus:hover { background: var(--ink); color: var(--on-ink); }
+.plus:active { transform: scale(0.9); }
+.plus[disabled] { opacity: 0.35; cursor: not-allowed; }
+.plus svg { width: 18px; height: 18px; }
+
+/* sections */
+.section { padding-block: 72px 8px; scroll-margin-top: 70px; }
+.gifts + .section { padding-top: 64px; }
+.section h2 { font-size: clamp(2.2rem, 7vw, 4.4rem); font-weight: 800; letter-spacing: -0.04em; line-height: 0.92; }
+.sec-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px 24px; flex-wrap: wrap; }
+.section .sub { margin-top: 12px; color: var(--muted); max-width: 52ch; font-size: 1.05rem; }
+.filters { margin-top: 26px; display: grid; gap: 12px; }
+.row { display: flex; gap: 8px; align-items: center; }
+.row.scroll { overflow-x: auto; margin-inline: -20px; padding-inline: 20px; scrollbar-width: none; }
+.row.scroll::-webkit-scrollbar { display: none; }
+.row.wrap-row { flex-wrap: wrap; }
+.row .grow { flex: 1 1 220px; }
+.grid { margin-top: 24px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 26px 14px; }
+@media (min-width: 720px) { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 36px 20px; } }
+@media (min-width: 1040px) { .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.empty { grid-column: 1 / -1; padding: 56px 0; color: var(--muted); font-size: 1.1rem; }
+
+/* birthday band */
+.gifts { background: var(--ink); color: var(--on-ink); padding-block: 56px 64px; scroll-margin-top: 70px; }
+.gifts h2 { font-size: clamp(2.4rem, 8vw, 5.6rem); font-weight: 800; letter-spacing: -0.045em; line-height: 0.9; max-width: 14ch; }
+.gifts .sub { margin-top: 16px; max-width: 48ch; color: color-mix(in srgb, var(--on-ink) 72%, transparent); font-size: 1.05rem; }
+.tiers { margin-top: 36px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 860px) { .tiers { grid-template-columns: minmax(0, 1fr); } }
+.tier { position: relative; overflow: hidden; border: 1.5px solid color-mix(in srgb, var(--on-ink) 28%, transparent); border-radius: 24px; padding: 22px 22px 24px; min-height: 190px; display: flex; flex-direction: column; justify-content: space-between; gap: 22px; isolation: isolate; }
+.tier .fill { position: absolute; inset: auto 0 0 0; background: color-mix(in srgb, var(--accent) 38%, transparent); z-index: -1; transition: height 0.6s cubic-bezier(.2, .7, .2, 1); }
+.tier.on .fill { background: var(--accent); }
+.tier .amt { font-size: clamp(2rem, 6vw, 3rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1; font-variant-numeric: tabular-nums; }
+.tier .amt small { font-size: 0.45em; font-weight: 600; letter-spacing: 0; margin-left: 6px; }
+.tier .rew { font-size: 1.15rem; font-weight: 500; line-height: 1.25; max-width: 22ch; }
+.tier .st { font-size: 0.9rem; font-weight: 600; }
+.tier.on { color: var(--on-accent); border-color: var(--accent); }
+.deal { margin-top: 14px; border: 1.5px dashed color-mix(in srgb, var(--on-ink) 35%, transparent); border-radius: 24px; padding: 18px 22px; display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: baseline; justify-content: space-between; }
+.deal b { font-weight: 700; font-size: 1.1rem; }
+.deal span { color: color-mix(in srgb, var(--on-ink) 75%, transparent); }
+.gifts .basket-line { margin-top: 22px; font-weight: 500; color: color-mix(in srgb, var(--on-ink) 80%, transparent); }
+.gifts .basket-line b { color: var(--on-ink); font-variant-numeric: tabular-nums; }
+
+/* layering */
+.lab { margin-top: 28px; display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 28px; align-items: stretch; }
+@media (max-width: 860px) { .lab { grid-template-columns: minmax(0, 1fr); } }
+.lab .pick { display: grid; gap: 14px; align-content: start; }
+.lab label { display: grid; gap: 6px; font-weight: 600; font-size: 0.95rem; }
+.lab .out { border-radius: 28px; min-height: 440px; display: flex; flex-direction: column; justify-content: space-between; padding: 24px; color: #fff; position: relative; }
+.lab .out .big { position: relative; z-index: 6; font-weight: 800; font-stretch: 62%; font-size: clamp(2.6rem, 9vw, 4.6rem); line-height: 0.88; letter-spacing: -0.02em; text-shadow: 0 1px 24px rgba(0, 0, 0, 0.35); }
+.lab .out .big span { display: block; }
+.lab .out .duo { position: absolute; right: 4%; bottom: 21%; height: 56%; width: auto; z-index: 2; overflow: visible; }
+.lab .out .duo-img { display: flex; align-items: flex-end; gap: 8px; width: auto; }
+.lab .out .duo-img img, .lab .out .duo-img svg { height: 100%; width: auto; max-width: 48%; object-fit: contain; filter: drop-shadow(0 14px 14px rgba(0,0,0,.5)); }
+.lab .out .say { position: relative; z-index: 6; font-weight: 500; font-size: 1.05rem; line-height: 1.3; max-width: 44%; margin-top: auto; text-shadow: 0 1px 12px rgba(0, 0, 0, 0.5); }
+@media (max-width: 860px) { .lab .out { min-height: 480px; } .lab .out .duo { right: 50%; transform: translateX(50%); height: 48%; } .lab .out .say { max-width: 100%; } }
+.lab .tot { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.lab .tot b { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+
+/* guide, advisor, footer */
+.guide { margin-top: 28px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 860px) { .guide { grid-template-columns: minmax(0, 1fr); } }
+.guide div { border-top: 2px solid var(--fg); padding-top: 14px; }
+.guide h3 { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.03em; }
+.guide p { margin-top: 6px; color: var(--muted); max-width: 36ch; }
+.advisor { margin-top: 80px; border-radius: 36px; padding: 44px 28px; display: grid; gap: 22px; justify-items: start; color: #fff; }
+.advisor h2 { font-size: clamp(2.2rem, 7vw, 4.4rem); font-weight: 800; letter-spacing: -0.04em; line-height: 0.92; max-width: 13ch; position: relative; z-index: 2; }
+.advisor p { max-width: 46ch; font-size: 1.1rem; font-weight: 500; position: relative; z-index: 2; }
+.advisor .btn { position: relative; z-index: 2; background: #fff; color: #1b1518; border-color: #fff; }
+footer.site { margin-top: 72px; padding-block: 36px 120px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.92rem; }
+footer.site .wrap { display: flex; flex-wrap: wrap; gap: 18px 36px; justify-content: space-between; align-items: center; }
+footer.site .tl { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.03em; color: var(--fg); }
+footer.site a { color: var(--muted); }
+
+/* dock (phones) */
+.dock { position: fixed; left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); z-index: 35; display: none; gap: 8px; }
+@media (max-width: 760px) { .dock { display: flex; } }
+.dock .btn { box-shadow: var(--shadow); }
+.dock .main { flex: 1; justify-content: space-between; }
+
+/* drawer */
+.overlay { position: fixed; inset: 0; background: var(--overlay); z-index: 60; }
+.drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(480px, 100%); background: var(--bg); z-index: 70; display: flex; flex-direction: column; animation: slide 0.28s cubic-bezier(.2, .7, .2, 1); padding-top: env(safe-area-inset-top, 0px); }
+@keyframes slide { from { transform: translateX(40px); opacity: 0; } to { transform: none; opacity: 1; } }
+.drawer > header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px 12px 22px; }
+.drawer h2 { font-size: 1.9rem; font-weight: 800; letter-spacing: -0.04em; }
+.drawer .scroll { flex: 1; overflow-y: auto; padding: 8px 22px 22px; display: flex; flex-direction: column; gap: 22px; min-height: 0; }
+.drawer > footer { padding: 16px 22px calc(16px + env(safe-area-inset-bottom, 0px)); background: var(--surface); border-radius: 24px 24px 0 0; display: flex; flex-direction: column; gap: 10px; }
+.line { display: grid; grid-template-columns: 68px minmax(0, 1fr) auto; gap: 14px; align-items: center; }
+.line .th { width: 68px; border-radius: 14px; }
+
+.line h4 { font-size: 1.02rem; font-weight: 700; letter-spacing: -0.01em; line-height: 1.15; }
+.line small { color: var(--muted); font-size: 0.86rem; }
+.stepper { display: inline-flex; align-items: center; border: 1.5px solid var(--line); border-radius: 999px; margin-top: 6px; }
+.stepper button { width: 34px; height: 34px; background: none; border: none; font-size: 1.15rem; border-radius: 50%; }
+.stepper span { min-width: 26px; text-align: center; font-variant-numeric: tabular-nums; font-weight: 600; }
+.line .amt { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }
+.line .rm { background: none; border: none; color: var(--muted); font-size: 0.8rem; text-decoration: underline; padding: 4px 0; display: block; margin-left: auto; }
+.gift-line { background: var(--accent); color: var(--on-accent); border-radius: 20px; padding: 14px; }
+.gift-line .line small { color: color-mix(in srgb, var(--on-accent) 70%, transparent); }
+.gift-line .tl { font-weight: 700; margin-bottom: 8px; }
+.gift-line label { display: grid; gap: 6px; font-size: 0.86rem; font-weight: 600; margin-top: 12px; }
+.progress p { margin-top: 8px; color: var(--muted); font-size: 0.95rem; }
+.progress p b { color: var(--fg); }
+.meter { height: 8px; border-radius: 4px; background: var(--line); position: relative; }
+.meter i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 4px; background: var(--accent); transition: width 0.4s; }
+.meter u { position: absolute; top: -3px; width: 2px; height: 14px; background: var(--fg); opacity: 0.35; }
+.offers { display: grid; gap: 8px; }
+.offers h3 { font-size: 1rem; font-weight: 700; }
+.offer { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 12px; border: 1.5px solid var(--line); border-radius: 18px; padding: 14px; background: transparent; text-align: left; width: 100%; }
+.offer[aria-pressed="true"] { border-color: var(--fg); background: var(--surface); }
+.offer .r { width: 18px; height: 18px; border: 1.5px solid var(--fg); border-radius: 50%; margin-top: 2px; display: grid; place-items: center; }
+.offer[aria-pressed="true"] .r::after { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--fg); }
+.offer b { font-weight: 700; display: block; line-height: 1.25; }
+.offer span { color: var(--muted); font-size: 0.9rem; }
+.totals { display: grid; gap: 4px; font-variant-numeric: tabular-nums; }
+.totals div { display: flex; justify-content: space-between; gap: 12px; color: var(--muted); }
+.totals div.save { color: var(--ok); font-weight: 600; }
+.totals div.total { color: var(--fg); font-size: 1.35rem; font-weight: 800; letter-spacing: -0.02em; padding-top: 8px; margin-top: 4px; border-top: 1px solid var(--line); }
+.hint { font-size: 0.82rem; color: var(--muted); text-align: center; }
+.empty-cart { padding: 60px 8px; color: var(--muted); font-size: 1.1rem; }
+
+/* modal */
+.modal-bg { position: fixed; inset: 0; z-index: 80; background: var(--overlay); display: grid; place-items: center; padding: 14px; overflow-y: auto; }
+.modal { background: var(--bg); border-radius: 30px; width: min(940px, 100%); position: relative; max-height: calc(100% - 4px); overflow-y: auto; box-shadow: var(--shadow); }
+.modal .x { position: absolute; top: 10px; right: 10px; z-index: 5; background: var(--bg); }
+.pdp { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.pdp .left { padding: 14px; }
+.pdp .info { padding: 40px 30px 30px; display: flex; flex-direction: column; gap: 14px; align-content: start; }
+.pdp h2 { font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 800; letter-spacing: -0.04em; line-height: 0.95; }
+.pdp .say { font-size: 1.15rem; font-weight: 500; line-height: 1.3; }
+.pdp .desc { color: var(--muted); }
+.pdp .tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.pdp .tags span { border: 1.5px solid var(--line); border-radius: 999px; padding: 2px 12px; font-size: 0.86rem; }
+.pdp .price { display: flex; gap: 10px; align-items: baseline; font-variant-numeric: tabular-nums; }
+.pdp .price b { font-size: 1.8rem; font-weight: 800; letter-spacing: -0.03em; }
+.pdp .price s { color: var(--muted); }
+.pdp .acts { display: flex; gap: 8px; flex-wrap: wrap; }
+@media (max-width: 720px) { .pdp { grid-template-columns: minmax(0, 1fr); } .pdp .info { padding: 8px 22px 26px; } .pdp .left { padding: 10px 10px 0; } }
+.quiz { padding: 34px 26px 28px; display: grid; gap: 20px; }
+.quiz .step { color: var(--muted); font-weight: 600; font-size: 0.92rem; }
+.quiz h2 { font-size: clamp(1.9rem, 5vw, 2.8rem); font-weight: 800; letter-spacing: -0.04em; line-height: 0.98; max-width: 16ch; }
+.quiz .opts { display: grid; gap: 10px; }
+.quiz .opt { text-align: left; border: 1.5px solid var(--line); border-radius: 20px; background: transparent; padding: 16px 20px; font-weight: 600; font-size: 1.1rem; transition: background 0.15s, border-color 0.15s; }
+.quiz .opt:hover { border-color: var(--fg); background: var(--surface); }
+.quiz .res { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 640px) { .quiz .res { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.quiz .btns { display: flex; flex-wrap: wrap; gap: 8px; }
+.momo { padding: 32px 24px 26px; display: grid; gap: 16px; max-width: 480px; margin-inline: auto; }
+.momo h2 { font-size: 2.2rem; font-weight: 800; letter-spacing: -0.04em; }
+.momo .nets { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.momo .net { border: 1.5px solid var(--line); border-radius: 18px; padding: 16px; background: transparent; font-weight: 700; }
+.momo .net[aria-pressed="true"] { border-color: var(--fg); background: var(--surface); }
+.notice { border: 1.5px solid var(--warn); border-radius: 14px; color: var(--warn); padding: 10px 14px; font-size: 0.9rem; font-weight: 500; }
+label.lab-f { display: grid; gap: 6px; font-size: 0.88rem; font-weight: 600; }
+.toast { position: fixed; left: 50%; bottom: calc(86px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: var(--on-ink); padding: 11px 20px; border-radius: 999px; z-index: 100; font-weight: 600; font-size: 0.92rem; box-shadow: var(--shadow); max-width: calc(100% - 28px); text-align: center; }
+@media (min-width: 761px) { .toast { bottom: 28px; } }
+
+/* admin */
+.admin { padding-block: 28px 120px; }
+.admin h1 { font-size: clamp(2.2rem, 6vw, 3.6rem); font-weight: 800; letter-spacing: -0.04em; line-height: 0.95; }
+.admin .lede { margin-top: 10px; font-size: 1.05rem; font-weight: 400; max-width: 62ch; color: var(--muted); letter-spacing: 0; }
+.tabs { display: flex; gap: 6px; margin-top: 24px; overflow-x: auto; padding-bottom: 4px; }
+.panel { margin-top: 22px; display: grid; gap: 16px; }
+.bulk { background: var(--accent); color: var(--on-accent); border-radius: 18px; padding: 12px 14px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.bulk .field-in { background: rgba(255, 255, 255, 0.6); border-color: transparent; color: #1b1518; }
+.bulk .btn { border-color: #1b1518; color: #1b1518; }
+.bulk .btn.solid { background: #1b1518; color: #fff; }
+.tbl-wrap { overflow-x: auto; border: 1.5px solid var(--line); border-radius: 20px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 0.93rem; min-width: 900px; }
+th { text-align: left; font-weight: 600; font-size: 0.82rem; color: var(--muted); padding: 12px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+td { padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: middle; font-variant-numeric: tabular-nums; }
+tr:last-child td { border-bottom: none; }
+td .th { width: 44px; border-radius: 10px; }
+td .nm b { font-weight: 700; display: block; }
+td .nm small { color: var(--muted); }
+.pill { display: inline-block; border: 1.5px solid var(--line); border-radius: 999px; padding: 0 10px; font-size: 0.78rem; margin: 2px 4px 2px 0; }
+.pill.on { border-color: var(--fg); font-weight: 600; }
+.m-good { color: var(--ok); font-weight: 600; } .m-warn { color: var(--warn); font-weight: 600; } .m-bad { color: var(--danger); font-weight: 600; }
+.acts { display: flex; gap: 6px; justify-content: flex-end; }
+.form { padding: 30px 24px 24px; display: grid; gap: 14px; }
+.form h2 { font-size: 2.2rem; font-weight: 800; letter-spacing: -0.04em; }
+.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; }
+.checks { display: flex; flex-wrap: wrap; gap: 8px 20px; }
+.checks label { display: flex; gap: 8px; align-items: center; font-size: 0.95rem; }
+.previewbox { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; align-items: center; }
+.previewbox .frame { border-radius: 16px; }
+.previewbox #f-frame { width: 96px; }
+.box { border: 1.5px solid var(--line); border-radius: 22px; background: var(--surface); padding: 20px; display: grid; gap: 14px; }
+.box h3 { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.03em; }
+.tier-row { display: grid; grid-template-columns: minmax(0, 1.2fr) repeat(2, minmax(0, 1fr)); gap: 12px; align-items: end; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
+@media (max-width: 640px) { .tier-row { grid-template-columns: minmax(0, 1fr); } }
+.note { font-size: 0.9rem; color: var(--muted); }
+.json { width: 100%; min-height: 160px; font-family: ui-monospace, Menlo, monospace; font-size: 0.8rem; }
+input[type=range] { width: 100%; accent-color: var(--fg); }
+@media (max-width: 560px) { .wrap { padding-inline: 16px; } .row.scroll { margin-inline: -16px; padding-inline: 16px; } .picks { margin-inline: -16px; padding-inline: 16px; } }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation: none !important; transition: none !important; } }
+</style>
+
+<svg class="defs" aria-hidden="true" focusable="false">
+  <linearGradient id="gl-gold" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#8a6414"/><stop offset=".35" stop-color="#f0d78f"/><stop offset=".6" stop-color="#d9b45a"/><stop offset="1" stop-color="#8a6414"/></linearGradient>
+  <linearGradient id="gl-cap" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2a2220"/><stop offset=".3" stop-color="#5a4b46"/><stop offset=".55" stop-color="#1c1514"/><stop offset="1" stop-color="#0e0a09"/></linearGradient>
+  <linearGradient id="gl-glass" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity=".38"/><stop offset=".14" stop-color="#fff" stop-opacity=".08"/><stop offset=".6" stop-color="#fff" stop-opacity=".03"/><stop offset="1" stop-color="#fff" stop-opacity=".3"/></linearGradient>
+  <linearGradient id="gl-streak" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset="1" stop-color="#fff" stop-opacity=".05"/></linearGradient>
+  <linearGradient id="gl-bow" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd27a"/><stop offset="1" stop-color="#e58a10"/></linearGradient>
+  <symbol id="ls-mark" viewBox="0 0 760 1120"><path d="M 86.250 75.706 C 84.935 75.959, 84 76.869, 84 77.895 C 84 82.498, 87.676 83.774, 102.080 84.172 C 112.254 84.453, 116.267 84.943, 118.080 86.123 C 119.411 86.989, 122.188 88.012, 124.250 88.394 C 126.377 88.789, 128 89.672, 128 90.434 C 128 91.181, 129.576 92.073, 131.553 92.444 C 133.506 92.810, 135.355 93.761, 135.660 94.555 C 135.964 95.350, 136.883 96, 137.701 96 C 138.518 96, 139.423 96.900, 139.710 98 C 139.998 99.100, 140.898 100, 141.710 100 C 142.523 100, 143.423 100.900, 143.710 102 C 143.998 103.100, 144.808 104, 145.510 104 C 146.928 104, 148 106.173, 148 109.047 C 148 110.082, 148.900 111.411, 150 112 C 151.453 112.778, 152 114.094, 152 116.813 C 152 118.871, 152.787 121.668, 153.750 123.027 C 156.470 126.870, 156.470 729.133, 153.750 735.770 C 152.787 738.119, 152 741.423, 152 743.113 C 152 744.802, 151.100 747.329, 150 748.727 C 148.900 750.126, 148 752.226, 148 753.394 C 148 754.563, 147.100 756.081, 146 756.768 C 144.900 757.455, 144 758.600, 144 759.313 C 144 760.633, 137.737 768, 136.615 768 C 136.277 768, 135.100 768.900, 134 770 C 132.900 771.100, 131.100 772, 130 772 C 128.900 772, 128 772.627, 128 773.393 C 128 774.928, 125.897 776, 122.883 776 C 121.809 776, 119.808 776.735, 118.436 777.634 C 116.655 778.801, 112.032 779.522, 102.259 780.158 C 87.284 781.132, 84 782.281, 84 786.548 C 84 790.364, 86.030 790.607, 116.500 790.436 C 387.799 788.914, 503.028 788.910, 503.608 790.422 C 503.941 791.290, 504.805 792, 505.528 792 C 506.250 792, 507.160 793.462, 507.551 795.250 C 507.941 797.038, 509.102 799.573, 510.130 800.885 C 511.159 802.197, 512 804.286, 512 805.528 C 512 806.770, 512.650 808.036, 513.445 808.340 C 514.239 808.645, 515.194 810.606, 515.567 812.697 C 515.939 814.789, 517.089 817.903, 518.122 819.618 C 519.155 821.333, 520.003 823.808, 520.006 825.118 C 520.010 826.428, 520.720 828.850, 521.586 830.500 C 522.451 832.150, 523.564 837.384, 524.059 842.131 C 524.554 846.878, 525.418 851.970, 525.980 853.446 C 527.580 857.655, 527.296 890.516, 525.631 893.800 C 524.878 895.285, 524.042 899.699, 523.774 903.609 C 523.506 907.519, 522.548 912.200, 521.644 914.013 C 520.740 915.825, 520 918.156, 520 919.193 C 520 920.231, 519.100 922.844, 518 925 C 516.900 927.156, 516 929.856, 516 931 C 516 932.144, 515.155 934.749, 514.122 936.790 C 513.089 938.830, 511.922 941.993, 511.528 943.818 C 511.134 945.642, 510.223 947.361, 509.504 947.637 C 508.785 947.913, 507.903 949.706, 507.543 951.622 C 507.184 953.538, 506.239 955.355, 505.445 955.660 C 504.650 955.964, 504 956.996, 504 957.952 C 504 958.908, 503.140 960.468, 502.090 961.419 C 501.039 962.369, 499.906 964.239, 499.571 965.574 C 499.236 966.908, 498.295 968, 497.481 968 C 496.666 968, 496 968.900, 496 970 C 496 971.129, 495.333 972, 494.469 972 C 493.626 972, 492.640 972.775, 492.276 973.722 C 491.315 976.227, 475.008 992, 473.380 992 C 472.621 992, 472 992.689, 472 993.531 C 472 994.374, 471.247 995.352, 470.326 995.705 C 469.406 996.058, 467.878 997.057, 466.931 997.924 C 462.399 1002.074, 459.711 1004, 458.450 1004 C 457.691 1004, 456.589 1004.900, 456 1006 C 455.411 1007.100, 454.256 1008, 453.433 1008 C 452.611 1008, 451.683 1008.663, 451.372 1009.473 C 451.061 1010.283, 449.307 1011.227, 447.473 1011.571 C 445.639 1011.915, 443.906 1012.803, 443.622 1013.543 C 443.338 1014.284, 441.538 1015.184, 439.622 1015.543 C 437.706 1015.903, 435.913 1016.785, 435.637 1017.504 C 435.361 1018.223, 433.642 1019.122, 431.818 1019.503 C 429.993 1019.883, 427.012 1021.050, 425.193 1022.097 C 423.374 1023.144, 420.599 1024, 419.026 1024 C 417.453 1024, 416.009 1024.474, 415.816 1025.053 C 415.408 1026.275, 408.902 1027.941, 404.404 1027.976 C 402.701 1027.989, 399.890 1028.707, 398.158 1029.571 C 396.375 1030.461, 390.341 1031.515, 384.254 1032.001 C 378.339 1032.474, 371.928 1033.342, 370.007 1033.930 C 365.455 1035.324, 342.496 1035.313, 337.993 1033.915 C 336.072 1033.318, 328.980 1032.467, 322.233 1032.023 C 314.661 1031.525, 309.358 1030.712, 308.378 1029.899 C 307.506 1029.175, 303.899 1028.283, 300.364 1027.917 C 296.828 1027.551, 293.162 1026.581, 292.218 1025.760 C 291.273 1024.940, 288.265 1023.979, 285.534 1023.624 C 282.742 1023.261, 280.203 1022.327, 279.734 1021.490 C 279.257 1020.637, 277.482 1020, 275.585 1020 C 273.762 1020, 271.197 1019.165, 269.885 1018.145 C 268.573 1017.125, 265.813 1015.979, 263.750 1015.600 C 261.648 1015.213, 260 1014.326, 260 1013.582 C 260 1012.814, 258.363 1011.994, 256.109 1011.633 C 253.969 1011.291, 251.958 1010.334, 251.641 1009.506 C 251.323 1008.678, 250.149 1008, 249.031 1008 C 247.914 1008, 246.100 1007.100, 245 1006 C 243.900 1004.900, 242.325 1004, 241.500 1004 C 240.675 1004, 240 1003.360, 240 1002.578 C 240 1001.795, 238.393 1000.625, 236.430 999.977 C 234.466 999.329, 232.618 998.169, 232.323 997.399 C 232.028 996.630, 231.175 996, 230.428 996 C 229.681 996, 228.589 995.100, 228 994 C 227.411 992.900, 226.448 992, 225.859 992 C 224.877 992, 222.340 990.159, 216.165 984.964 C 214.881 983.884, 213.418 983, 212.915 983 C 212.412 983, 212 982.377, 212 981.617 C 212 980.856, 211.100 979.998, 210 979.710 C 208.900 979.423, 208 978.523, 208 977.710 C 208 976.898, 207.100 975.998, 206 975.710 C 204.900 975.423, 204 974.523, 204 973.710 C 204 972.898, 203.100 971.998, 202 971.710 C 200.900 971.423, 200 970.470, 200 969.594 C 200 968.717, 199.311 968, 198.469 968 C 197.626 968, 196.643 967.213, 196.284 966.250 C 195.925 965.288, 194.815 963.912, 193.816 963.193 C 192.817 962.475, 192 961.292, 192 960.566 C 192 959.839, 191.278 958.646, 190.396 957.914 C 189.514 957.181, 188.400 955.551, 187.921 954.291 C 187.441 953.031, 186.363 952, 185.525 952 C 184.686 952, 184 951.200, 184 950.222 C 184 949.244, 183.100 947.674, 182 946.732 C 180.900 945.790, 180 944.131, 180 943.045 C 180 941.959, 179.100 940.589, 178 940 C 176.827 939.372, 176 937.906, 176 936.455 C 176 935.094, 175.100 933.210, 174 932.268 C 172.900 931.326, 172 929.792, 172 928.860 C 172 926.087, 170.880 924, 169.393 924 C 168.471 924, 168 922.832, 168 920.550 C 168 918.421, 167.385 916.755, 166.394 916.201 C 165.395 915.642, 164.597 913.449, 164.282 910.401 C 164.003 907.703, 163.079 904.948, 162.226 904.272 C 161.224 903.477, 160.436 900.478, 159.994 895.772 C 159.619 891.772, 158.567 886.827, 157.656 884.782 C 156.290 881.715, 156 877.483, 156 860.591 C 156 839.004, 155.923 838.665, 151.230 839.604 C 148.355 840.179, 148.237 840.425, 147.743 846.850 C 147.461 850.507, 146.507 854.850, 145.622 856.500 C 143.316 860.798, 143.209 905.863, 145.496 909.354 C 146.319 910.610, 147.288 914.532, 147.649 918.069 C 148.010 921.606, 149.136 926.068, 150.153 927.985 C 151.169 929.902, 152 933.179, 152 935.267 C 152 937.630, 152.538 939.269, 153.425 939.610 C 154.209 939.911, 155.147 941.908, 155.508 944.049 C 155.870 946.190, 157.029 949.038, 158.083 950.378 C 159.137 951.719, 160 954.191, 160 955.873 C 160 957.906, 160.670 959.288, 162 960 C 163.100 960.589, 164 961.955, 164 963.035 C 164 964.116, 164.900 965.900, 166 967 C 167.100 968.100, 168 969.689, 168 970.531 C 168 971.374, 168.648 972.311, 169.439 972.615 C 170.230 972.919, 171.178 974.534, 171.545 976.205 C 171.935 977.979, 173 979.449, 174.106 979.738 C 175.148 980.010, 176 980.973, 176 981.876 C 176 982.780, 176.900 984.081, 178 984.768 C 179.100 985.455, 180 986.426, 180 986.927 C 180 987.779, 183.863 992.455, 190.250 999.334 C 191.763 1000.964, 193 1002.680, 193 1003.148 C 193 1003.617, 193.413 1004, 193.918 1004 C 194.424 1004, 196.681 1005.772, 198.936 1007.938 C 201.190 1010.104, 203.885 1012.146, 204.925 1012.476 C 205.965 1012.806, 207.068 1013.734, 207.376 1014.538 C 207.685 1015.342, 208.611 1016, 209.433 1016 C 210.256 1016, 211.411 1016.900, 212 1018 C 212.589 1019.100, 213.546 1020, 214.127 1020 C 214.709 1020, 216.329 1020.900, 217.727 1022 C 219.126 1023.100, 221.057 1024, 222.018 1024 C 222.980 1024, 224.002 1024.900, 224.290 1026 C 224.586 1027.132, 225.654 1028, 226.751 1028 C 227.818 1028, 229.505 1028.900, 230.500 1030 C 231.495 1031.100, 232.957 1032, 233.747 1032 C 234.538 1032, 236.329 1032.900, 237.727 1034 C 239.126 1035.100, 240.884 1036, 241.635 1036 C 242.386 1036, 243.900 1036.900, 245 1038 C 246.100 1039.100, 247.900 1040, 249 1040 C 250.100 1040, 251.832 1040.832, 252.848 1041.848 C 253.864 1042.864, 256.581 1043.997, 258.886 1044.366 C 261.191 1044.734, 263.332 1045.703, 263.645 1046.518 C 263.977 1047.381, 265.493 1048, 267.278 1048 C 268.964 1048, 271.119 1048.703, 272.068 1049.561 C 273.017 1050.420, 276.524 1051.509, 279.862 1051.981 C 283.200 1052.452, 286.947 1053.550, 288.188 1054.419 C 289.429 1055.289, 292.384 1056, 294.755 1056 C 297.125 1056, 300.694 1056.681, 302.686 1057.513 C 304.677 1058.345, 311.975 1059.433, 318.903 1059.930 C 325.832 1060.428, 332.767 1061.322, 334.315 1061.917 C 337.823 1063.267, 389.563 1063.316, 396 1061.976 C 398.475 1061.461, 404.890 1060.591, 410.255 1060.043 C 415.620 1059.495, 421.335 1058.361, 422.955 1057.523 C 424.575 1056.685, 427.739 1056, 429.986 1056 C 432.232 1056, 435.225 1055.244, 436.636 1054.319 C 438.047 1053.394, 441.731 1052.295, 444.823 1051.875 C 448.001 1051.444, 450.940 1050.436, 451.583 1049.556 C 452.208 1048.700, 454.112 1048, 455.813 1048 C 459.071 1048, 464 1046.174, 464 1044.967 C 464 1044.576, 465.751 1043.976, 467.891 1043.633 C 470.031 1043.291, 472.042 1042.334, 472.359 1041.506 C 472.677 1040.678, 474.118 1040, 475.561 1040 C 477.004 1040, 479.329 1039.100, 480.727 1038 C 482.126 1036.900, 484.273 1036, 485.500 1036 C 486.727 1036, 488.874 1035.100, 490.273 1034 C 491.671 1032.900, 493.471 1032, 494.273 1032 C 495.074 1032, 496.874 1031.100, 498.273 1030 C 499.671 1028.900, 501.532 1028, 502.408 1028 C 503.283 1028, 504 1027.408, 504 1026.685 C 504 1025.962, 505.463 1024.589, 507.250 1023.635 C 515.135 1019.424, 516 1018.812, 516 1017.445 C 516 1016.650, 516.900 1016, 518 1016 C 519.100 1016, 520 1015.616, 520 1015.148 C 520 1014.679, 522.752 1012.133, 526.116 1009.490 C 535.921 1001.787, 554.031 982.899, 556.403 977.902 C 556.899 976.856, 557.912 976, 558.653 976 C 559.394 976, 560 975.208, 560 974.241 C 560 973.273, 560.900 971.919, 562 971.232 C 563.100 970.545, 564 969.307, 564 968.482 C 564 967.656, 564.900 966.210, 566 965.268 C 567.100 964.326, 568 962.981, 568 962.278 C 568 961.575, 568.900 960.100, 570 959 C 571.100 957.900, 572 956.100, 572 955 C 572 953.900, 572.900 952.100, 574 951 C 575.100 949.900, 576 948.058, 576 946.908 C 576 945.757, 576.900 943.671, 578 942.273 C 579.100 940.874, 580 938.751, 580 937.554 C 580 936.357, 580.900 934.411, 582 933.230 C 583.100 932.050, 584 929.863, 584 928.371 C 584 926.878, 584.674 924.913, 585.498 924.002 C 586.322 923.092, 587.388 920.249, 587.867 917.684 C 588.346 915.119, 589.311 912.330, 590.011 911.487 C 590.711 910.643, 591.634 906.116, 592.061 901.426 C 592.489 896.737, 593.437 892.178, 594.169 891.297 C 596.069 889.009, 596.109 828.566, 594.213 825.247 C 593.506 824.008, 592.449 819.058, 591.865 814.247 C 591.281 809.436, 590.399 805.005, 589.904 804.401 C 589.410 803.796, 588.547 800.885, 587.987 797.932 C 587.427 794.978, 586.301 792.188, 585.484 791.731 C 584.668 791.274, 584 789.756, 584 788.358 C 584 786.960, 583.100 784.671, 582 783.273 C 580.900 781.874, 580 779.891, 580 778.865 C 580 777.839, 579.100 776.100, 578 775 C 576.900 773.900, 576 771.930, 576 770.622 C 576 769.315, 575.342 767.699, 574.539 767.032 C 573.735 766.365, 572.773 764.848, 572.401 763.660 C 572.029 762.472, 570.887 760.427, 569.862 759.115 C 568.838 757.803, 568 755.907, 568 754.900 C 568 753.894, 567.100 752.589, 566 752 C 564.900 751.411, 564 750.331, 564 749.600 C 564 748.868, 563.100 747.126, 562 745.727 C 560.900 744.329, 560 742.468, 560 741.592 C 560 740.717, 559.360 740, 558.578 740 C 557.795 740, 556.625 738.393, 555.977 736.430 C 555.329 734.466, 554.213 732.635, 553.498 732.361 C 552.782 732.086, 551.970 730.993, 551.692 729.931 C 551.414 728.869, 550.470 728, 549.594 728 C 548.667 728, 548 727.163, 548 726 C 548 724.889, 547.333 724, 546.500 724 C 545.675 724, 545 723.466, 545 722.813 C 545 721.413, 523.903 700.561, 521.588 699.672 C 520.715 699.337, 520 698.374, 520 697.531 C 520 696.689, 519.283 696, 518.406 696 C 517.530 696, 516.577 695.100, 516.290 694 C 516 692.893, 514.926 692, 513.883 692 C 512.667 692, 512 691.292, 512 690 C 512 688.667, 511.333 688, 510 688 C 508.871 688, 508 687.333, 508 686.469 C 508 685.626, 507.212 684.643, 506.250 684.284 C 505.288 683.925, 503.948 682.866, 503.273 681.930 C 502.599 680.994, 500.911 679.944, 499.523 679.595 C 498.135 679.247, 497 678.509, 497 677.956 C 497 677.403, 495.875 676.523, 494.500 676 C 493.125 675.477, 492 674.363, 492 673.525 C 492 672.667, 491.126 672, 490 672 C 488.900 672, 488 671.527, 488 670.949 C 488 670.371, 486.405 669.232, 484.456 668.417 C 482.508 667.603, 480.659 666.276, 480.350 665.468 C 480.040 664.661, 478.934 664, 477.893 664 C 476.852 664, 476 663.559, 476 663.020 C 476 662.482, 474.200 661.122, 472 660 C 469.800 658.878, 468 657.518, 468 656.980 C 468 656.441, 467.148 656, 466.107 656 C 465.066 656, 463.960 655.339, 463.650 654.532 C 463.341 653.724, 461.492 652.397, 459.544 651.583 C 457.595 650.768, 456 649.629, 456 649.051 C 456 648.473, 455.100 648, 454 648 C 452.900 648, 452 647.559, 452 647.020 C 452 646.482, 450.200 645.122, 448 644 C 445.800 642.878, 444 641.518, 444 640.980 C 444 640.441, 443.283 640, 442.408 640 C 441.532 640, 439.671 639.100, 438.273 638 C 436.874 636.900, 434.891 636, 433.865 636 C 432.839 636, 432 635.527, 432 634.949 C 432 634.371, 430.313 633.197, 428.250 632.341 C 426.188 631.485, 424.140 630.158, 423.700 629.392 C 423.260 628.627, 422.023 628, 420.950 628 C 419.878 628, 418.100 627.100, 417 626 C 415.900 624.900, 414.395 624, 413.655 624 C 412.915 624, 411.495 623.100, 410.500 622 C 409.505 620.900, 407.876 620, 406.880 620 C 405.885 620, 404.589 619.100, 404 618 C 403.411 616.900, 402.045 616, 400.965 616 C 399.884 616, 398.100 615.100, 397 614 C 395.900 612.900, 394.438 611.990, 393.750 611.978 C 393.063 611.966, 391.375 611.076, 390 610 C 388.625 608.924, 386.761 608.034, 385.857 608.022 C 384.953 608.010, 383.960 607.339, 383.650 606.532 C 383.341 605.724, 381.492 604.397, 379.544 603.583 C 377.595 602.768, 376 601.629, 376 601.051 C 376 600.473, 375.161 600, 374.135 600 C 373.109 600, 371.126 599.100, 369.727 598 C 368.329 596.900, 366.576 596, 365.833 596 C 365.089 596, 363.944 595.140, 363.288 594.090 C 362.632 593.039, 360.724 591.879, 359.048 591.510 C 357.371 591.142, 356 590.202, 356 589.421 C 356 588.639, 355.161 588, 354.135 588 C 353.109 588, 351.126 587.100, 349.727 586 C 348.329 584.900, 346.576 584, 345.833 584 C 345.089 584, 343.919 583.100, 343.232 582 C 342.534 580.882, 340.900 580, 339.527 580 C 338.094 580, 336.624 579.167, 336 578 C 335.411 576.900, 334.331 576, 333.600 576 C 332.868 576, 331.126 575.100, 329.727 574 C 328.329 572.900, 326.538 572, 325.747 572 C 324.957 572, 323.532 571.140, 322.581 570.090 C 321.631 569.039, 319.761 567.906, 318.426 567.571 C 317.092 567.236, 316 566.295, 316 565.481 C 316 564.666, 315.161 564, 314.135 564 C 313.109 564, 311.126 563.100, 309.727 562 C 308.329 560.900, 306.715 560, 306.142 560 C 305.569 560, 304.703 559.292, 304.219 558.427 C 303.735 557.561, 302.447 556.324, 301.358 555.677 C 295.220 552.031, 292 549.699, 292 548.901 C 292 548.406, 291.100 548, 290 548 C 288.871 548, 288 547.333, 288 546.469 C 288 545.626, 287.213 544.650, 286.250 544.298 C 284.609 543.699, 280.405 540.681, 277 537.657 C 276.175 536.925, 274.713 536.041, 273.750 535.694 C 272.788 535.347, 272 534.374, 272 533.531 C 272 532.667, 271.129 532, 270 532 C 268.837 532, 268 531.333, 268 530.406 C 268 529.530, 267.100 528.577, 266 528.290 C 264.900 528.002, 264 527.102, 264 526.290 C 264 525.477, 263.100 524.577, 262 524.290 C 260.900 524.002, 260 523.102, 260 522.290 C 260 521.477, 259.100 520.577, 258 520.290 C 256.893 520, 256 518.926, 256 517.883 C 256 516.848, 255.334 516, 254.519 516 C 253.705 516, 252.764 514.908, 252.429 513.574 C 252.094 512.239, 250.961 510.369, 249.910 509.419 C 248.860 508.468, 248 506.860, 248 505.845 C 248 504.830, 247.373 504, 246.607 504 C 245.087 504, 244 501.902, 244 498.968 C 244 497.940, 243.312 496.714, 242.470 496.243 C 241.612 495.763, 240.578 493.094, 240.114 490.159 C 239.660 487.284, 238.601 484.384, 237.763 483.715 C 236.881 483.013, 235.967 480.030, 235.598 476.645 C 235.246 473.425, 234.569 470.050, 234.093 469.145 C 231.956 465.079, 231.874 453.610, 233.929 446 C 235.042 441.875, 235.964 436.598, 235.976 434.274 C 235.990 431.848, 236.850 428.654, 237.996 426.774 C 239.094 424.973, 239.994 422.524, 239.996 421.332 C 240.002 418.112, 241.036 416, 242.607 416 C 243.373 416, 244 415.161, 244 414.135 C 244 413.109, 244.900 411.126, 246 409.727 C 247.100 408.329, 248 406.468, 248 405.592 C 248 404.717, 248.689 404, 249.531 404 C 250.374 404, 251.356 403.236, 251.715 402.301 C 252.612 399.963, 269.430 383, 270.851 383 C 271.483 383, 272 382.325, 272 381.500 C 272 380.667, 272.889 380, 274 380 C 275.100 380, 276 379.527, 276 378.949 C 276 378.371, 277.688 377.197, 279.750 376.341 C 281.813 375.485, 283.831 374.209, 284.236 373.506 C 284.641 372.803, 286.510 371.939, 288.389 371.587 C 290.269 371.234, 292.061 370.283, 292.372 369.473 C 292.691 368.643, 294.207 368, 295.846 368 C 297.446 368, 299.305 367.337, 299.978 366.526 C 300.651 365.716, 302.843 364.788, 304.850 364.464 C 306.858 364.140, 310.349 363.003, 312.610 361.937 C 314.870 360.872, 318.707 360, 321.137 360 C 323.567 360, 326.551 359.303, 327.768 358.450 C 334.598 353.666, 392.538 353.630, 402.107 358.403 C 403.867 359.282, 406.926 360.010, 408.904 360.022 C 410.882 360.034, 414.462 360.934, 416.859 362.022 C 419.257 363.110, 422.087 364, 423.149 364 C 424.211 364, 426.749 364.839, 428.790 365.865 C 430.830 366.890, 434.144 368.028, 436.153 368.392 C 438.163 368.756, 440.061 369.717, 440.372 370.527 C 440.683 371.337, 442.081 372, 443.478 372 C 444.876 372, 446.790 372.900, 447.732 374 C 448.674 375.100, 450.244 376, 451.222 376 C 452.200 376, 453.900 376.900, 455 378 C 456.100 379.100, 457.675 380, 458.500 380 C 459.325 380, 460 380.441, 460 380.980 C 460 381.518, 461.800 382.878, 464 384 C 466.200 385.122, 468 386.482, 468 387.020 C 468 387.559, 468.717 388, 469.594 388 C 470.470 388, 471.423 388.900, 471.710 390 C 471.998 391.100, 472.835 392, 473.571 392 C 474.307 392, 475.964 393.012, 477.253 394.250 C 478.543 395.488, 481.376 398.104, 483.549 400.065 C 489.206 405.170, 495.527 412.208, 496.286 414.250 C 496.644 415.212, 497.626 416, 498.469 416 C 499.311 416, 500 416.675, 500 417.500 C 500 418.325, 500.900 419.900, 502 421 C 503.100 422.100, 504 423.884, 504 424.965 C 504 426.045, 504.900 427.411, 506 428 C 507.100 428.589, 508 429.894, 508 430.900 C 508 431.907, 508.900 433.874, 510 435.273 C 511.100 436.671, 512 438.960, 512 440.358 C 512 441.756, 512.603 443.260, 513.341 443.700 C 514.078 444.140, 515.236 446.744, 515.915 449.487 C 516.593 452.229, 517.580 454.994, 518.109 455.631 C 518.637 456.267, 519.332 459.198, 519.654 462.144 C 520.385 468.843, 522.265 472, 525.523 472 C 528.429 472, 528.186 474.482, 528.018 446.500 C 527.935 432.530, 527.436 423.659, 526.530 420 C 524.558 412.044, 524.077 405.415, 523.483 378.045 C 523.099 360.312, 522.616 353.375, 521.727 352.810 C 519.217 351.215, 513.488 351.949, 511.646 354.101 C 509.519 356.585, 485.690 356.736, 484.170 354.275 C 483.754 353.602, 480.410 352.625, 476.740 352.105 C 473.070 351.586, 469.052 350.449, 467.811 349.580 C 466.570 348.711, 464.193 347.985, 462.527 347.966 C 460.862 347.947, 457.700 347.063, 455.500 346 C 453.300 344.937, 450.087 344.053, 448.359 344.034 C 446.632 344.015, 443.257 343.110, 440.859 342.022 C 438.462 340.934, 434.908 340.034, 432.961 340.022 C 431.015 340.010, 427.658 339.100, 425.500 338 C 422.845 336.647, 419.603 336, 415.470 336 C 412.111 336, 406.919 335.212, 403.932 334.250 C 395.880 331.656, 341.433 331.663, 332.540 334.260 C 329.262 335.217, 324.312 336.003, 321.540 336.006 C 318.768 336.010, 315.150 336.718, 313.500 337.580 C 311.850 338.442, 308.250 339.415, 305.500 339.742 C 302.750 340.069, 299.150 341.159, 297.500 342.164 C 295.850 343.170, 293.150 344.004, 291.500 344.018 C 289.850 344.033, 287.375 344.924, 286 346 C 284.625 347.076, 282.331 347.966, 280.903 347.978 C 279.475 347.990, 277.268 348.900, 276 350 C 274.732 351.100, 272.413 352, 270.847 352 C 268.993 352, 268 352.519, 268 353.488 C 268 354.451, 266.588 355.202, 264 355.616 C 261.722 355.980, 260 356.813, 260 357.550 C 260 358.262, 258.393 359.375, 256.430 360.023 C 254.466 360.671, 252.618 361.831, 252.323 362.601 C 252.028 363.370, 250.920 364, 249.862 364 C 248.803 364, 247.689 364.648, 247.385 365.439 C 247.081 366.230, 245.466 367.178, 243.795 367.545 C 242.021 367.935, 240.551 369, 240.262 370.106 C 239.990 371.148, 238.919 372, 237.883 372 C 236.848 372, 236 372.666, 236 373.481 C 236 374.295, 234.875 375.244, 233.500 375.589 C 232.125 375.934, 231 376.618, 231 377.108 C 231 378.987, 228.099 377.891, 227.402 375.750 C 226.431 372.771, 226.282 140.944, 227.250 140.345 C 227.662 140.091, 228 136.854, 228 133.152 C 228 128.397, 228.587 125.272, 230 122.500 C 231.100 120.342, 232 117.809, 232 116.870 C 232 114.088, 233.118 112, 234.607 112 C 235.373 112, 236 111.162, 236 110.138 C 236 106.583, 250.492 92, 254.025 92 C 254.663 92, 256.329 91.100, 257.727 90 C 259.126 88.900, 261.575 88, 263.170 88 C 264.765 88, 267.199 87.261, 268.578 86.357 C 270.503 85.096, 274.687 84.569, 286.591 84.088 C 302.978 83.427, 303.951 83.107, 303.985 78.375 C 303.996 76.790, 303.206 76.091, 300.875 75.625 C 297.422 74.934, 89.849 75.013, 86.250 75.706 M 185 548.031 C 185 549.803, 185.623 551.302, 186.500 551.638 C 187.349 551.964, 188 553.454, 188 555.068 C 188 556.638, 188.837 558.727, 189.859 559.711 C 190.882 560.695, 192.015 562.737, 192.378 564.250 C 192.741 565.763, 193.491 567, 194.044 567 C 194.597 567, 195.477 568.125, 196 569.500 C 196.523 570.875, 197.637 572, 198.475 572 C 199.314 572, 200 572.637, 200 573.415 C 200 575.852, 211.551 588.392, 220.546 595.721 L 224.500 598.942 224.752 668.221 C 224.959 725.015, 225.270 738.671, 226.480 744 C 227.292 747.575, 228.200 751.737, 228.497 753.250 C 228.796 754.769, 229.701 756, 230.519 756 C 231.334 756, 232 756.900, 232 758 C 232 759.333, 232.667 760, 234 760 C 235.100 760, 236 760.666, 236 761.481 C 236 762.295, 237.029 763.220, 238.286 763.536 C 243.229 764.776, 451.373 763.493, 454.521 762.203 C 456.182 761.522, 462.446 760.635, 468.440 760.232 C 478.901 759.529, 482.837 758.026, 478.538 756.376 C 477.642 756.032, 475.017 753.882, 472.704 751.597 C 470.392 749.313, 465.688 745.252, 462.250 742.574 C 458.813 739.896, 456 737.321, 456 736.852 C 456 736.384, 455.100 736, 454 736 C 452.871 736, 452 735.333, 452 734.469 C 452 733.626, 451.212 732.643, 450.250 732.284 C 449.288 731.925, 447.912 730.815, 447.193 729.816 C 446.475 728.817, 445.307 728, 444.598 728 C 443.890 728, 442.495 727.100, 441.500 726 C 440.505 724.900, 438.860 724, 437.845 724 C 436.830 724, 436 723.314, 436 722.475 C 436 721.637, 434.969 720.559, 433.709 720.079 C 432.449 719.600, 430.819 718.486, 430.086 717.604 C 429.354 716.722, 427.868 716, 426.784 716 C 425.654 716, 424.590 715.147, 424.290 714 C 424.002 712.900, 422.989 712, 422.038 712 C 421.088 712, 419.495 711.100, 418.500 710 C 417.505 708.900, 415.876 708, 414.880 708 C 413.885 708, 412.589 707.100, 412 706 C 411.411 704.900, 410.331 704, 409.600 704 C 408.868 704, 407.126 703.100, 405.727 702 C 404.329 700.900, 402.693 700, 402.092 700 C 401.492 700, 400.100 699.100, 399 698 C 397.900 696.900, 396.116 696, 395.035 696 C 393.955 696, 392.589 695.100, 392 694 C 391.411 692.900, 390.115 692, 389.120 692 C 388.124 692, 386.495 691.100, 385.500 690 C 384.505 688.900, 382.908 688, 381.952 688 C 380.996 688, 379.972 687.370, 379.677 686.601 C 379.382 685.831, 377.534 684.671, 375.570 684.023 C 373.607 683.375, 372 682.205, 372 681.422 C 372 680.640, 371.212 679.990, 370.250 679.978 C 369.288 679.966, 367.375 679.076, 366 678 C 364.625 676.924, 362.712 676.034, 361.750 676.022 C 360.788 676.010, 360 675.373, 360 674.607 C 360 673.072, 357.897 672, 354.887 672 C 353.815 672, 352.680 671.330, 352.366 670.511 C 352.052 669.692, 350.041 668.549, 347.897 667.972 C 345.624 667.360, 344 666.314, 344 665.461 C 344 664.658, 343.161 664, 342.135 664 C 341.109 664, 339.126 663.100, 337.727 662 C 336.329 660.900, 334.651 660, 334 660 C 333.349 660, 331.671 659.100, 330.273 658 C 328.874 656.900, 327.116 656, 326.365 656 C 325.614 656, 324.100 655.100, 323 654 C 321.900 652.900, 320.116 652, 319.035 652 C 317.955 652, 316.589 651.100, 316 650 C 315.411 648.900, 314.045 648, 312.965 648 C 311.884 648, 310.100 647.100, 309 646 C 307.900 644.900, 306.508 644, 305.908 644 C 305.307 644, 303.671 643.100, 302.273 642 C 300.874 640.900, 298.943 640, 297.982 640 C 297.020 640, 295.998 639.100, 295.710 638 C 295.357 636.651, 294.346 636, 292.602 636 C 291.100 636, 289.494 635.162, 288.768 634 C 288.081 632.900, 286.911 632, 286.167 632 C 285.424 632, 283.671 631.100, 282.273 630 C 280.874 628.900, 278.891 628, 277.865 628 C 276.839 628, 276 627.360, 276 626.578 C 276 625.795, 274.393 624.625, 272.430 623.977 C 270.466 623.329, 268.618 622.169, 268.323 621.399 C 268.028 620.630, 267.159 620, 266.393 620 C 265.627 620, 264.212 619.309, 263.250 618.463 C 258.556 614.342, 255.061 612, 253.606 612 C 252.723 612, 251.984 611.438, 251.963 610.750 C 251.929 609.560, 245.231 604.793, 241.675 603.429 C 240.754 603.075, 240 602.159, 240 601.393 C 240 600.627, 239.100 600, 238 600 C 236.874 600, 236 599.333, 236 598.475 C 236 597.637, 234.875 596.523, 233.500 596 C 232.125 595.477, 231 594.619, 231 594.092 C 231 593.566, 230.213 592.879, 229.250 592.566 C 227.049 591.852, 216.782 582.059, 211.500 575.636 C 209.300 572.962, 206.791 570.002, 205.924 569.060 C 205.057 568.118, 204.058 566.594, 203.705 565.674 C 203.352 564.753, 202.374 564, 201.531 564 C 200.667 564, 200 563.129, 200 562 C 200 560.900, 199.527 560, 198.949 560 C 198.371 560, 197.250 558.450, 196.459 556.555 C 195.667 554.660, 194.418 552.748, 193.684 552.305 C 192.950 551.862, 192.060 550.712, 191.706 549.750 C 191.352 548.788, 190.422 548, 189.638 548 C 188.855 548, 187.955 547.325, 187.638 546.500 C 186.645 543.911, 185 544.866, 185 548.031 M 645.391 626.177 C 642.543 630.784, 640.218 636.025, 639.629 639.162 C 639.253 641.167, 638.340 643.039, 637.599 643.324 C 636.858 643.608, 635.958 645.408, 635.599 647.324 C 635.240 649.239, 634.283 651.061, 633.473 651.372 C 632.663 651.683, 632 652.791, 632 653.834 C 632 654.877, 631.177 656.803, 630.170 658.115 C 629.164 659.427, 628.053 661.288, 627.702 662.250 C 627.350 663.212, 626.653 664, 626.153 664 C 625.652 664, 624.652 665.462, 623.930 667.250 C 623.208 669.038, 622.029 670.860, 621.309 671.300 C 620.589 671.740, 620 672.732, 620 673.504 C 620 674.277, 618.875 676.034, 617.500 677.409 C 616.125 678.784, 615 680.605, 615 681.455 C 615 682.305, 614.539 683, 613.975 683 C 613.412 683, 612.523 684.125, 612 685.500 C 611.477 686.875, 610.363 688, 609.525 688 C 608.686 688, 608 688.655, 608 689.455 C 608 690.255, 606.987 691.953, 605.750 693.229 C 604.513 694.505, 601.700 697.702, 599.500 700.334 C 591.997 709.312, 576.397 723.940, 574.285 723.978 C 573.617 723.990, 572.589 724.900, 572 726 C 571.411 727.100, 570.242 728, 569.401 728 C 566.631 728, 568.052 734.272, 571.157 735.753 C 572.619 736.450, 574.741 738.591, 575.873 740.510 C 577.006 742.430, 578.398 744, 578.966 744 C 579.535 744, 580.010 744.788, 580.022 745.750 C 580.034 746.712, 580.924 748.625, 582 750 C 583.076 751.375, 583.966 753.235, 583.978 754.133 C 583.990 755.032, 584.900 756.002, 586 756.290 C 587.462 756.672, 588 757.654, 588 759.938 C 588 761.783, 588.610 763.297, 589.489 763.634 C 590.308 763.948, 591.438 765.913, 592 768 C 592.562 770.087, 593.692 772.052, 594.511 772.366 C 595.441 772.723, 596 774.264, 596 776.469 C 596 779.469, 596.339 779.998, 598.250 779.985 C 601.880 779.960, 603.120 778.563, 603.656 773.894 C 604.254 768.680, 605.894 764, 607.121 764 C 607.605 764, 608.015 762.313, 608.034 760.250 C 608.053 758.188, 608.937 754.700, 610 752.500 C 611.063 750.300, 611.947 747.363, 611.966 745.973 C 611.985 744.582, 612.681 742.472, 613.514 741.283 C 614.347 740.094, 615.466 736.818, 615.999 734.004 C 616.533 731.190, 617.651 728.206, 618.485 727.372 C 619.318 726.539, 620 724.375, 620 722.563 C 620 720.752, 620.900 718.126, 622 716.727 C 623.100 715.329, 624.010 712.906, 624.022 711.342 C 624.034 709.779, 624.924 707.375, 626 706 C 627.076 704.625, 627.966 701.996, 627.978 700.158 C 627.990 698.319, 628.900 695.671, 630 694.273 C 631.100 692.874, 632 690.364, 632 688.694 C 632 687.024, 632.713 684.869, 633.585 683.906 C 634.456 682.943, 635.392 680.208, 635.665 677.828 C 636.255 672.674, 637.899 668, 639.121 668 C 639.605 668, 640.002 665.638, 640.004 662.750 C 640.006 659.269, 640.680 656.397, 642.004 654.226 C 643.102 652.425, 644.003 649.950, 644.007 648.726 C 644.010 647.502, 644.907 645.150, 646 643.500 C 647.175 641.725, 647.990 638.808, 647.993 636.357 C 647.998 633.523, 648.495 632.024, 649.567 631.613 C 652.008 630.676, 651.036 625.576, 648.344 625.193 C 647.159 625.024, 645.830 625.467, 645.391 626.177" fill="currentColor" fill-rule="evenodd"/></symbol>
+  <symbol id="i-bag" viewBox="0 0 24 24"><path d="M5 8h14l-1 12H6L5 8Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 8V6a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4 6.5 6.5 0 0 0 20 14.5Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-wa" viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0-7.7 13.6L3 21l4.5-1.2A9 9 0 1 0 12 3Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M8.8 8.5c.2-.4.6-.4.8 0l.8 1.6c.1.3 0 .5-.2.7l-.5.6c.6 1.2 1.5 2.1 2.7 2.7l.6-.6c.2-.2.4-.3.7-.2l1.6.8c.4.2.4.6.1 1-.6.9-1.6 1.1-2.7.7-2.4-.9-4.2-2.7-5-5-.3-1 0-1.9.7-2.3Z" fill="currentColor"/></symbol>
+</svg>
+
+<div id="app"></div>
+<div id="drawer-root"></div>
+<div id="modal-root"></div>
+<div id="toast-root" aria-live="polite"></div>
+
+<script>
+
+'use strict';
+
+const SUPABASE_URL = 'https://imcagqrrwdqmsgnzspoi.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_Gp3zaXStdVgAYiwQfZYVQQ_Qf87mjrE';
+
+const db = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY) : null;
+
+if (!db) {
+  console.error('Supabase client failed to initialize.');
+} else {
+  console.log('Supabase client created successfully as "db"!');
+}
+
+
+
+
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } }
+};
+const K = { data: 'lush.data.v2', cart: 'lush.cart.v2', lang: 'lush.lang', theme: 'lush.theme' };
+
+/* ============ i18n ============ */
+const T = {
+  en: {
+    ribbon: 'It’s my birthday and you get the gifts. See what you unlock.',
+    navShop: 'Collection', navGifts: 'Birthday gifts', navLayer: 'Layering', navAsk: 'Ask us',
+    heroH: 'It’s my birthday. You get the gifts.', heroLede: 'From {a}, add a perfume oil for {p}. From {b}, it’s free.', ctaGifts: 'See what you unlock', sticker: 'Free oil from {min}',
+    lede: 'Arabic perfumes, body mists and oils, from {min}.',
+    ctaQuiz: 'Find my signature', ctaShop: 'Shop the collection',
+    moodQ: 'I’m dressing for', m_work: 'work', m_night: 'a night out', m_weekend: 'the weekend', m_gift: 'a gift',
+    giftsH: 'Spend more, unwrap more.', giftsSub: 'The more you add to your basket, the better the gift. One offer per order, and we apply the better one for you.',
+    r1: 'A perfume oil for {price}', r2: 'A free perfume oil', r3: 'A free perfume oil and {pct}% off one perfume',
+    unlocked: 'Unlocked', togo: '{amount} to go',
+    dealT: 'Double Scent Deal', dealD: 'Buy {n} perfumes and take {pct}% off the pair.', yourBasket: 'Your basket',
+    collection: 'The collection', collectionSub: 'Tap a scent for its notes. Prices are in FCFA.',
+    all: 'All', c_perfume: 'Perfumes', c_mist: 'Body mists', c_oil: 'Oils',
+    search: 'Search a scent or a note', sort: 'Sort', sFeatured: 'Featured', sLow: 'Price, low to high', sHigh: 'Price, high to low',
+    budget: 'Budget', bAny: 'Any budget', bU10: 'Under {a}', bMid: '{a} to {b}', bHigh: '{b} and up',
+    add: 'Add to basket', addShort: 'Add {name} to basket', soldOut: 'Sold out', low: 'Only {n} left', none: 'Nothing matches that. Try a different note or budget.',
+    sample: 'Sample', off: '-{pct}%', details: 'Details',
+    layerH: 'Layer your signature', layerSub: 'Roll an oil on your skin, spray a perfume on top. Pick a pair and see what you get.',
+    layerP: 'Perfume', layerO: 'Oil', layerSay: 'Expect {a} and {b} up front, with {c} underneath.', layerAdd: 'Add both',
+    guideH: 'Which one is for you?', gPerfume: 'Perfumes', gPerfumeD: 'Spray on pulse points and clothes. The full-strength choice.', gOil: 'Oils', gOilD: 'Roll onto skin. Concentrated, so a little goes a long way, and it fits in a pocket.', gMist: 'Body mists', gMistD: 'Lighter and fresher. For every day and for layering.',
+    askH: 'Not sure what to pick?', askD: 'Tell us your budget and the occasion. We’ll reply with options.', askBtn: 'Message us on WhatsApp',
+    tagline: 'Wear your signature.', admin: 'Management',
+    basket: 'Your basket', empty: 'Your basket is empty. Start with a scent you like.', remove: 'Remove', close: 'Close',
+    sub: 'Subtotal', save: 'Offer savings', gift: 'Birthday gift', total: 'Total', free: 'Free',
+    orderWa: 'Order on WhatsApp', payMomo: 'Pay with Mobile Money', waNote: 'We confirm availability and delivery with you on WhatsApp.',
+    moreToUnlock: 'Add {amount} more to unlock: {reward}', allUnlocked: 'Every birthday gift unlocked.',
+    chooseOffer: 'Choose your offer', chooseOil: 'Choose your gift oil', ladderOffer: 'Birthday gift: {reward}', bundleOffer: 'Double Scent Deal: {pct}% off the pair', saves: 'Saves {amount}',
+    momoTitle: 'Mobile Money', momoNet: 'Choose your network', momoPhone: 'Phone number', momoGo: 'Continue',
+    momoDemo: 'Prototype: payment is not connected yet. No money will be taken.', momoDone: 'On the live site this step sends a payment request for {amount} to your phone. Nothing was charged.',
+    theme: 'Switch theme', lang: 'Language', askWa: 'Ask on WhatsApp',
+    quizStep: 'Question {n} of 3', quizDone: 'Your signature',
+    q1: 'Where will you wear it most?', qWork: 'At work', qNight: 'On a night out', qWeekend: 'At the weekend', qGift: 'It’s a gift',
+    q2: 'What should you smell like?', qFresh: 'Fresh and clean', qWarm: 'Sweet and warm', qDeep: 'Deep and smoky', qFloral: 'Floral',
+    q3: 'What’s your budget?', qU10: 'Under {a}', qMid: '{a} to {b}', qHigh: '{b} and up', qAny: 'No limit',
+    quizRes: 'Three that fit you', quizAddAll: 'Add all three', quizRestart: 'Start again',
+    waHello: 'Hello Lush Scentsations, I would like to order:', waOffer: 'Offer', waTotal: 'Total', waName: 'My name:', waArea: 'Delivery area:',
+    waGeneric: 'Hello Lush Scentsations, I would like help choosing a perfume.',
+    waQuiz: 'Hello Lush Scentsations, I took the scent quiz. I’m shopping for: {where}. I like: {vibe}. Budget: {budget}. Suggested: {list}. Can you help me choose?',
+    open: 'Opens with {a}, settles into {b} and {c}.', open2: 'Opens with {a}, settles into {b}.', open1: 'All {a}.', askAbout: 'Ask about this'
+  },
+  fr: {
+    ribbon: 'C’est mon anniversaire et les cadeaux sont pour vous. Voyez ce que vous débloquez.',
+    navShop: 'Collection', navGifts: 'Cadeaux d’anniversaire', navLayer: 'Superposition', navAsk: 'Nous écrire',
+    heroH: 'C’est mon anniversaire. Les cadeaux sont pour vous.', heroLede: 'Dès {a}, ajoutez une huile parfumée à {p}. Dès {b}, elle est offerte.', ctaGifts: 'Voir ce que vous débloquez', sticker: 'Huile offerte dès {min}',
+    lede: 'Parfums arabes, brumes corporelles et huiles, dès {min}.',
+    ctaQuiz: 'Trouver ma signature', ctaShop: 'Voir la collection',
+    moodQ: 'Je m’habille pour', m_work: 'le travail', m_night: 'une sortie', m_weekend: 'le week-end', m_gift: 'un cadeau',
+    giftsH: 'Plus vous achetez, plus vous recevez.', giftsSub: 'Plus votre panier est rempli, plus le cadeau est beau. Une seule offre par commande, et nous appliquons la meilleure pour vous.',
+    r1: 'Une huile parfumée à {price}', r2: 'Une huile parfumée offerte', r3: 'Une huile offerte et {pct} % sur un parfum',
+    unlocked: 'Débloqué', togo: 'Encore {amount}',
+    dealT: 'Offre Double Parfum', dealD: 'Achetez {n} parfums et profitez de {pct} % de remise sur la paire.', yourBasket: 'Votre panier',
+    collection: 'La collection', collectionSub: 'Touchez un parfum pour voir ses notes. Prix en FCFA.',
+    all: 'Tout', c_perfume: 'Parfums', c_mist: 'Brumes', c_oil: 'Huiles',
+    search: 'Chercher un parfum ou une note', sort: 'Trier', sFeatured: 'Sélection', sLow: 'Prix croissant', sHigh: 'Prix décroissant',
+    budget: 'Budget', bAny: 'Tous budgets', bU10: 'Moins de {a}', bMid: 'De {a} à {b}', bHigh: '{b} et plus',
+    add: 'Ajouter au panier', addShort: 'Ajouter {name} au panier', soldOut: 'Épuisé', low: 'Plus que {n}', none: 'Rien ne correspond. Essayez une autre note ou un autre budget.',
+    sample: 'Exemple', off: '-{pct} %', details: 'Détails',
+    layerH: 'Superposez votre signature', layerSub: 'Appliquez une huile sur la peau, vaporisez un parfum par-dessus. Choisissez un duo et voyez le résultat.',
+    layerP: 'Parfum', layerO: 'Huile', layerSay: 'Attendez-vous à {a} et {b} en tête, avec {c} en fond.', layerAdd: 'Ajouter les deux',
+    guideH: 'Lequel est pour vous ?', gPerfume: 'Parfums', gPerfumeD: 'À vaporiser sur les points de pulsation et les vêtements. Le choix pleine puissance.', gOil: 'Huiles', gOilD: 'À appliquer sur la peau. Concentrées, donc un peu suffit, et ça tient dans une poche.', gMist: 'Brumes corporelles', gMistD: 'Plus légères et plus fraîches. Pour tous les jours et pour superposer.',
+    askH: 'Un doute sur le choix ?', askD: 'Dites-nous votre budget et l’occasion. Nous vous répondons avec des idées.', askBtn: 'Écrivez-nous sur WhatsApp',
+    tagline: 'Portez votre signature.', admin: 'Gestion',
+    basket: 'Votre panier', empty: 'Votre panier est vide. Commencez par un parfum qui vous plaît.', remove: 'Retirer', close: 'Fermer',
+    sub: 'Sous-total', save: 'Économies', gift: 'Cadeau d’anniversaire', total: 'Total', free: 'Offert',
+    orderWa: 'Commander sur WhatsApp', payMomo: 'Payer par Mobile Money', waNote: 'Nous confirmons la disponibilité et la livraison avec vous sur WhatsApp.',
+    moreToUnlock: 'Ajoutez {amount} pour débloquer : {reward}', allUnlocked: 'Tous les cadeaux d’anniversaire sont débloqués.',
+    chooseOffer: 'Choisissez votre offre', chooseOil: 'Choisissez votre huile cadeau', ladderOffer: 'Cadeau d’anniversaire : {reward}', bundleOffer: 'Offre Double Parfum : {pct} % sur la paire', saves: 'Vous économisez {amount}',
+    momoTitle: 'Mobile Money', momoNet: 'Choisissez votre réseau', momoPhone: 'Numéro de téléphone', momoGo: 'Continuer',
+    momoDemo: 'Prototype : le paiement n’est pas encore connecté. Aucun montant ne sera prélevé.', momoDone: 'Sur le site en ligne, cette étape envoie une demande de paiement de {amount} sur votre téléphone. Rien n’a été prélevé.',
+    theme: 'Changer le thème', lang: 'Langue', askWa: 'Demander sur WhatsApp',
+    quizStep: 'Question {n} sur 3', quizDone: 'Votre signature',
+    q1: 'Où le porterez-vous le plus ?', qWork: 'Au travail', qNight: 'En sortie', qWeekend: 'Le week-end', qGift: 'C’est un cadeau',
+    q2: 'Quelle odeur voulez-vous ?', qFresh: 'Frais et propre', qWarm: 'Sucré et chaud', qDeep: 'Profond et fumé', qFloral: 'Floral',
+    q3: 'Quel est votre budget ?', qU10: 'Moins de {a}', qMid: 'De {a} à {b}', qHigh: '{b} et plus', qAny: 'Sans limite',
+    quizRes: 'Trois qui vous vont', quizAddAll: 'Ajouter les trois', quizRestart: 'Recommencer',
+    waHello: 'Bonjour Lush Scentsations, je souhaite commander :', waOffer: 'Offre', waTotal: 'Total', waName: 'Mon nom :', waArea: 'Zone de livraison :',
+    waGeneric: 'Bonjour Lush Scentsations, j’aimerais de l’aide pour choisir un parfum.',
+    waQuiz: 'Bonjour Lush Scentsations, j’ai fait le quiz. Je cherche pour : {where}. J’aime : {vibe}. Budget : {budget}. Suggestions : {list}. Pouvez-vous m’aider à choisir ?',
+    open: 'S’ouvre sur {a}, se pose sur {b} et {c}.', open2: 'S’ouvre sur {a}, se pose sur {b}.', open1: 'Tout en {a}.', askAbout: 'Poser une question'
+  }
+};
+const TAGS = {
+  oud: ['Oud', 'Oud'], woody: ['Woody', 'Boisé'], amber: ['Amber', 'Ambre'], vanilla: ['Vanilla', 'Vanille'], rose: ['Rose', 'Rose'], floral: ['Floral', 'Floral'],
+  musk: ['Musk', 'Musc'], fresh: ['Fresh', 'Frais'], spicy: ['Spicy', 'Épicé'], leather: ['Leather', 'Cuir'], bestseller: ['Bestseller', 'Best-seller'], new: ['New', 'Nouveau'],
+  forhim: ['For him', 'Pour lui'], forher: ['For her', 'Pour elle'], unisex: ['Unisex', 'Mixte'], gourmand: ['Gourmand', 'Gourmand'], sandalwood: ['Sandalwood', 'Santal'],
+  citrus: ['Citrus', 'Agrumes'], work: ['Work', 'Travail'], night: ['Night out', 'Sortie'], weekend: ['Weekend', 'Week-end'], gift: ['Gift', 'Cadeau']
+};
+const NOTES = { saffron: 'safran', amber: 'ambre', cardamom: 'cardamome', vanilla: 'vanille', sandalwood: 'santal', musk: 'musc', 'white musk': 'musc blanc', bergamot: 'bergamote', cedar: 'cèdre', incense: 'encens', jasmine: 'jasmin', 'orange blossom': 'fleur d’oranger', leather: 'cuir', tobacco: 'tabac', lemon: 'citron', 'dry woods': 'bois secs', peach: 'pêche', coconut: 'noix de coco', lychee: 'litchi', resin: 'résine', cream: 'crème' };
+const MOODS = ['work', 'night', 'weekend', 'gift'];
+const MOOD_HUES = { work: [20, 35, 8], night: [285, 330, 255], weekend: [78, 140, 32], gift: [345, 28, 318] };
+const CATS = ['perfume', 'mist', 'oil'];
+
+/* ============ sample data ============ */
+function seedData() {
+  let n = 0;
+  const P = (name, category, size, price, cost, stock, tags, hue, notes, en, fr, o = {}) => ({
+    id: 'p' + (++n), name, category, size, price, cost, stock, tags, hue, notes, image: null, desc: { en, fr },
+    eligible: category === 'perfume', giftOil: false, sample: true, ...o
+  });
+  const products = [
+    P('Oud Royale', 'perfume', '100 ml', 38000, 22000, 14, ['oud', 'woody', 'night', 'bestseller'], 18, ['saffron', 'oud', 'amber'], 'Smoky oud, warm amber and a trace of saffron. Made for evenings.', 'Oud fumé, ambre chaud et une pointe de safran. Fait pour les soirées.'),
+    P('Amber Nocturne', 'perfume', '100 ml', 32000, 18500, 9, ['amber', 'vanilla', 'night', 'new'], 32, ['cardamom', 'amber', 'vanilla'], 'Resinous amber softened with vanilla.', 'Ambre résineux adouci par la vanille.'),
+    P('Rose Majlis', 'perfume', '100 ml', 29000, 16500, 12, ['rose', 'floral', 'gift', 'forher'], 345, ['rose', 'sandalwood', 'musk'], 'Damask rose over soft sandalwood.', 'Rose de Damas sur un santal doux.'),
+    P('Musk Sahara', 'perfume', '100 ml', 24000, 13000, 20, ['musk', 'fresh', 'work', 'unisex'], 38, ['bergamot', 'white musk', 'cedar'], 'Clean white musk with a warm, sunlit finish.', 'Musc blanc propre, finale chaude et ensoleillée.'),
+    P('Saffron Velvet', 'perfume', '100 ml', 35000, 20000, 6, ['spicy', 'amber', 'night', 'bestseller'], 24, ['saffron', 'amber', 'cedar'], 'Saffron and spiced amber over a velvety woody base.', 'Safran et ambre épicé sur un fond boisé velouté.'),
+    P('Sultan’s Vanilla', 'perfume', '100 ml', 27000, 15000, 11, ['vanilla', 'gourmand', 'weekend', 'forher'], 42, ['caramel', 'vanilla', 'oud'], 'Creamy vanilla with caramel and a hint of oud.', 'Vanille crémeuse, caramel et une touche d’oud.'),
+    P('Black Misk', 'perfume', '100 ml', 22000, 12000, 16, ['musk', 'woody', 'work', 'forhim'], 275, ['incense', 'musk', 'cedar'], 'Dark musk, cedar and a breath of incense.', 'Musc sombre, cèdre et un souffle d’encens.'),
+    P('Jasmine Dunes', 'perfume', '100 ml', 26000, 14500, 8, ['floral', 'fresh', 'weekend'], 95, ['jasmine', 'orange blossom', 'musk'], 'Night jasmine and orange blossom on light musk.', 'Jasmin de nuit et fleur d’oranger sur un musc léger.'),
+    P('Oud & Leather', 'perfume', '100 ml', 42000, 25000, 5, ['oud', 'leather', 'night', 'forhim', 'new'], 12, ['leather', 'oud', 'tobacco'], 'Dark leather and deep oud. Bold and long lasting.', 'Cuir sombre et oud profond. Audacieux et tenace.'),
+    P('Desert Citrus', 'perfume', '100 ml', 18000, 9500, 18, ['fresh', 'citrus', 'work', 'weekend', 'unisex'], 72, ['bergamot', 'lemon', 'dry woods'], 'Bergamot and lemon over dry woods, bright for the day.', 'Bergamote et citron sur des bois secs, lumineux pour la journée.'),
+    P('Velvet Peach Mist', 'mist', '250 ml', 8500, 4168, 30, ['floral', 'weekend', 'forher'], 14, ['peach', 'vanilla'], 'A soft peach and vanilla body mist for every day.', 'Une brume pêche et vanille, douce, pour tous les jours.'),
+    P('Coconut Musk Mist', 'mist', '250 ml', 8000, 4168, 24, ['musk', 'weekend'], 52, ['coconut', 'musk'], 'Creamy coconut over a clean musk base.', 'Noix de coco crémeuse sur un fond de musc propre.'),
+    P('Rose Petal Mist', 'mist', '250 ml', 9000, 4168, 17, ['rose', 'floral', 'gift'], 350, ['rose', 'lychee'], 'Fresh rose petals with a touch of lychee.', 'Pétales de rose frais et une touche de litchi.'),
+    P('Vanilla Cloud Mist', 'mist', '250 ml', 8500, 4168, 22, ['vanilla', 'work'], 36, ['vanilla', 'musk'], 'Light, airy vanilla that stays close to the skin.', 'Une vanille légère et aérienne, près de la peau.'),
+    P('Amber Attar', 'oil', '10 ml', 4000, 1500, 40, ['amber', 'gift', 'work'], 30, ['amber', 'resin'], 'Concentrated perfume oil in a 10 ml roll-on. Warm amber.', 'Huile parfumée concentrée en roll-on de 10 ml. Ambre chaud.', { giftOil: true }),
+    P('White Musk Attar', 'oil', '10 ml', 3500, 1200, 40, ['musk', 'work'], 58, ['white musk'], 'Concentrated perfume oil in a 10 ml roll-on. Soft white musk.', 'Huile parfumée concentrée en roll-on de 10 ml. Musc blanc doux.', { giftOil: true }),
+    P('Rose Attar', 'oil', '10 ml', 4500, 1800, 35, ['rose', 'floral', 'gift'], 342, ['rose'], 'Concentrated perfume oil in a 10 ml roll-on. Damask rose.', 'Huile parfumée concentrée en roll-on de 10 ml. Rose de Damas.', { giftOil: true }),
+    P('Oud Attar', 'oil', '10 ml', 6500, 2800, 18, ['oud', 'woody', 'night'], 16, ['oud'], 'Concentrated oud oil in a 10 ml roll-on. Deep and lasting.', 'Huile d’oud concentrée en roll-on de 10 ml. Profonde et tenace.'),
+    P('Sandalwood Attar', 'oil', '10 ml', 4000, 1600, 28, ['sandalwood', 'woody', 'weekend'], 28, ['sandalwood', 'cream'], 'Concentrated perfume oil in a 10 ml roll-on. Creamy sandalwood.', 'Huile parfumée concentrée en roll-on de 10 ml. Santal crémeux.', { giftOil: true }),
+    P('Jasmine Attar', 'oil', '10 ml', 4000, 1500, 30, ['floral', 'fresh', 'weekend'], 92, ['jasmine'], 'Concentrated perfume oil in a 10 ml roll-on. Night jasmine.', 'Huile parfumée concentrée en roll-on de 10 ml. Jasmin de nuit.', { giftOil: true })
+  ];
+  return {
+    products,
+    discounts: [{ id: 'd1', name: 'Mist week', pct: 10, target: { type: 'category', value: 'mist' }, active: true }],
+    settings: {
+      whatsapp: '', campaignOn: true,
+      ladder: [{ min: 15000, type: 'oilSpecial', price: 1000 }, { min: 25000, type: 'oilFree' }, { min: 40000, type: 'oilFreePlusOff', pct: 10 }],
+      bundle: { enabled: true, n: 2, pct: 10 }
+    }
+  };
+}
+
+/* ============ state ============ */
+const S = {
+  lang: store.get(K.lang, null) || ((navigator.language || 'en').toLowerCase().startsWith('fr') ? 'fr' : 'en'),
+  theme: store.get(K.theme, null),
+  data: store.get(K.data, null) || seedData(),
+  cart: store.get(K.cart, {}),
+  giftOilId: null, offerMode: null, mood: 'work', layer: { p: null, o: null },
+  filter: { cat: 'all', tag: '', q: '', sort: 'featured', budget: '' },
+  route: location.hash === '#admin' ? 'admin' : 'shop'
+};
+const A = { tab: 'products', q: '', cat: '', tag: '', sel: new Set(), delArm: null, resetArm: false, newDisc: { target: 'all' } };
+if (!store.get(K.data, null)) store.set(K.data, S.data);
+const D = () => S.data;
+const t = (k, v = {}) => (T[S.lang][k] ?? T.en[k] ?? k).replace(/\{(\w+)\}/g, (_, x) => v[x] ?? '');
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const nf = n => Math.round(n).toLocaleString(S.lang === 'fr' ? 'fr-FR' : 'en-US').replace(/[  ]/g, ' ');
+const money = n => nf(n) + ' FCFA';
+const byId = id => D().products.find(p => p.id === id);
+const tagName = k => TAGS[k] ? TAGS[k][S.lang === 'fr' ? 1 : 0] : (k.charAt(0).toUpperCase() + k.slice(1)).replace(/-/g, ' ');
+const noteName = n => S.lang === 'fr' && NOTES[n] ? NOTES[n] : n;
+const catName = c => t('c_' + c);
+const uid = () => 'x' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+const save = () => store.set(K.data, S.data);
+const saveCart = () => store.set(K.cart, S.cart);
+
+/* ============ pricing ============ */
+function ruleMatches(r, p) {
+  const g = r.target;
+  if (g.type === 'all') return true;
+  if (g.type === 'category') return p.category === g.value;
+  if (g.type === 'tag') return (p.tags || []).includes(g.value);
+  if (g.type === 'products') return (g.value || []).includes(p.id);
+  return false;
+}
+const discountPct = p => D().discounts.filter(r => r.active && ruleMatches(r, p)).reduce((m, r) => Math.max(m, +r.pct || 0), 0);
+const round5 = x => Math.round(x / 5) * 5;
+const unitPrice = p => { const d = discountPct(p); return d ? round5(p.price * (100 - d) / 100) : p.price; };
+const inBudget = (p, b) => { const u = unitPrice(p); return !b || b === 'any' || (b === 'u10' && u < 10000) || (b === 'm' && u >= 10000 && u <= 25000) || (b === 'h' && u > 25000); };
+
+function calc() {
+  const cfg = D().settings;
+  const lines = Object.entries(S.cart).map(([id, qty]) => { const p = byId(id); return p ? { p, qty, unit: unitPrice(p) } : null; }).filter(Boolean);
+  lines.forEach(l => { l.total = l.unit * l.qty; });
+  const subtotal = lines.reduce((a, l) => a + l.total, 0);
+  const tiers = cfg.ladder;
+  let tierIdx = -1;
+  tiers.forEach((tr, i) => { if (subtotal >= tr.min) tierIdx = i; });
+  const oils = D().products.filter(p => p.giftOil && p.stock > 0);
+  const oil = oils.find(o => o.id === S.giftOilId) || oils[0] || null;
+  const eligible = lines.filter(l => l.p.eligible && l.p.category !== 'oil');
+  const top = eligible.slice().sort((a, b) => b.unit - a.unit)[0] || null;
+  let ladder = null;
+  if (cfg.campaignOn && tierIdx >= 0 && oil) {
+    const tr = tiers[tierIdx];
+    let charge = 0, off = 0, saving = 0;
+    if (tr.type === 'oilSpecial') { charge = tr.price; saving = Math.max(0, oil.price - tr.price); }
+    if (tr.type === 'oilFree') { saving = oil.price; }
+    if (tr.type === 'oilFreePlusOff') { saving = oil.price; off = top ? round5(top.unit * tr.pct / 100) : 0; saving += off; }
+    ladder = { tierIdx, tr, oil, charge, off, saving };
+  }
+  let bundle = null;
+  if (cfg.campaignOn && cfg.bundle.enabled) {
+    const units = [];
+    eligible.forEach(l => { for (let i = 0; i < l.qty; i++) units.push(l.unit); });
+    units.sort((a, b) => b - a);
+    if (units.length >= cfg.bundle.n) bundle = { off: round5(units.slice(0, cfg.bundle.n).reduce((a, b) => a + b, 0) * cfg.bundle.pct / 100) };
+  }
+  const best = bundle && (!ladder || bundle.off > ladder.saving) ? 'bundle' : (ladder ? 'ladder' : null);
+  const mode = (S.offerMode === 'ladder' && ladder) || (S.offerMode === 'bundle' && bundle) ? S.offerMode : best;
+  let discount = 0, giftLine = null, savings = 0;
+  if (mode === 'ladder') { discount = ladder.off; giftLine = { oil, price: ladder.charge }; savings = ladder.saving; }
+  if (mode === 'bundle') { discount = bundle.off; savings = bundle.off; }
+  const total = Math.max(0, subtotal - discount + (giftLine ? giftLine.price : 0));
+  const next = tiers[tierIdx + 1] || null;
+  return { lines, subtotal, tierIdx, ladder, bundle, mode, discount, giftLine, savings, total, next, oils, count: lines.reduce((a, l) => a + l.qty, 0) };
+}
+function rewardText(tr) {
+  if (tr.type === 'oilSpecial') return t('r1', { price: money(tr.price) });
+  if (tr.type === 'oilFree') return t('r2');
+  return t('r3', { pct: tr.pct });
+}
+
+/* ============ colour fields ============ */
+function fieldCSS(h, h2) {
+  h = +h || 30; const o = h2 == null ? (h + 336) % 360 : +h2;
+  return `background:radial-gradient(120% 92% at 14% 8%,hsl(${h} 90% 58%) 0%,transparent 58%),radial-gradient(92% 82% at 96% 38%,hsl(${o} 84% 46%) 0%,transparent 62%),radial-gradient(112% 92% at 26% 108%,hsl(${(h + 332) % 360} 72% 30%) 0%,transparent 66%),hsl(${h} 52% 13%)`;
+}
+const notesOf = p => (p.notes || []);
+
+/* ============ portrait frames: a generic bottle in focus, soft light behind ============ */
+function hash32(str) { let h = 2166136261; for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function bokehHtml(id, h, n, warm) {
+  const r = rng(hash32(String(id))); let out = '';
+  for (let i = 0; i < n; i++) {
+    const far = r() > 0.55, w = far ? 26 + r() * 30 : 9 + r() * 15, useWarm = r() < (warm ? 0.8 : 0.45);
+    const bh = Math.round(useWarm ? 36 + r() * 14 : (h + r() * 50 - 10 + 360) % 360);
+    out += `<i class="${far ? 'far' : ''}" style="left:${(4 + r() * 92).toFixed(1)}%;top:${(2 + r() * 64).toFixed(1)}%;width:${w.toFixed(1)}%;--bh:${bh};--bo:${(0.1 + r() * 0.3).toFixed(2)}"></i>`;
+  }
+  return out;
+}
+function bottleG(p, o = {}) {
+  const h = +p.hue || 30, id = 'lq' + String(p.id).replace(/\W/g, ''), cat = p.category;
+  const defs = `<linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="hsl(${h} 90% 62%)"/><stop offset="1" stop-color="hsl(${(h + 340) % 360} 82% 26%)"/></linearGradient>`;
+  const shadow = rx => `<ellipse cx="100" cy="227" rx="${rx}" ry="7" fill="#000" opacity=".5"/>`;
+  const label = (x, y, w, hh, m) => `<rect x="${x}" y="${y}" width="${w}" height="${hh}" rx="3" fill="#0a0604" fill-opacity=".4" stroke="url(#gl-gold)" stroke-width=".8"/><use href="#ls-mark" x="${(100 - m * 0.34).toFixed(1)}" y="${y + 7}" width="${(m * 0.679).toFixed(1)}" height="${m}" style="color:#ecc96e"/>`;
+  const word = (y, fs) => `<text x="100" y="${y}" text-anchor="middle" font-family="Cinzel,serif" font-size="${fs}" letter-spacing="1.6" fill="#ecc96e">LUSH</text>`;
+  let body;
+  if (cat === 'perfume') {
+    body = `${shadow(66)}<rect x="46" y="96" width="108" height="130" rx="12" fill="#fff" fill-opacity=".07"/><rect x="52" y="110" width="96" height="108" rx="8" fill="url(#${id})"/><rect x="52" y="110" width="96" height="9" rx="4" fill="#fff" fill-opacity=".3"/><rect x="46" y="96" width="108" height="130" rx="12" fill="url(#gl-glass)"/><rect x="47" y="208" width="106" height="17" rx="8" fill="#fff" fill-opacity=".16"/>${label(72, 138, 56, 66, 30)}${word(196, 6.5)}<rect x="85" y="84" width="30" height="14" rx="2" fill="url(#gl-gold)"/><rect x="68" y="34" width="64" height="52" rx="7" fill="url(#gl-cap)"/><rect x="68" y="78" width="64" height="8" fill="url(#gl-gold)"/><rect x="75" y="39" width="4" height="34" rx="2" fill="#fff" fill-opacity=".42"/><rect x="55" y="102" width="6" height="104" rx="3" fill="url(#gl-streak)"/><rect x="141" y="106" width="3" height="96" rx="1.5" fill="#fff" fill-opacity=".3"/>`;
+  } else if (cat === 'mist') {
+    body = `${shadow(54)}<rect x="62" y="96" width="76" height="130" rx="16" fill="#fff" fill-opacity=".07"/><rect x="67" y="110" width="66" height="108" rx="12" fill="url(#${id})"/><rect x="67" y="110" width="66" height="9" rx="4" fill="#fff" fill-opacity=".3"/><rect x="62" y="96" width="76" height="130" rx="16" fill="url(#gl-glass)"/>${label(78, 142, 44, 58, 26)}${word(192, 5.6)}<rect x="88" y="82" width="24" height="16" fill="url(#gl-gold)"/><rect x="84" y="72" width="32" height="12" rx="2" fill="url(#gl-gold)"/><rect x="90" y="46" width="20" height="28" rx="4" fill="url(#gl-cap)"/><rect x="104" y="50" width="26" height="9" rx="4" fill="url(#gl-cap)"/><rect x="68" y="104" width="5" height="104" rx="2.5" fill="url(#gl-streak)"/><rect x="131" y="108" width="2.5" height="96" rx="1.2" fill="#fff" fill-opacity=".3"/>`;
+  } else {
+    body = `${shadow(40)}<rect x="76" y="128" width="48" height="98" rx="12" fill="#fff" fill-opacity=".07"/><rect x="80" y="140" width="40" height="80" rx="9" fill="url(#${id})"/><rect x="80" y="140" width="40" height="8" rx="4" fill="#fff" fill-opacity=".3"/><rect x="76" y="128" width="48" height="98" rx="12" fill="url(#gl-glass)"/>${label(84, 158, 32, 50, 22)}<rect x="90" y="114" width="20" height="16" rx="2" fill="url(#gl-gold)"/><rect x="82" y="62" width="36" height="54" rx="7" fill="url(#gl-cap)"/><rect x="82" y="104" width="36" height="8" fill="url(#gl-gold)"/><rect x="87" y="67" width="3.5" height="34" rx="1.8" fill="#fff" fill-opacity=".42"/><rect x="81" y="134" width="4" height="82" rx="2" fill="url(#gl-streak)"/>`;
+  }
+  if (o.bow) body += `<g><path d="M100 88C80 62 50 68 56 88C60 102 90 98 100 88Z" fill="url(#gl-bow)"/><path d="M100 88C120 62 150 68 144 88C140 102 110 98 100 88Z" fill="url(#gl-bow)"/><path d="M97 92 82 126 94 119 100 95Z" fill="#e58a10"/><path d="M103 92 118 126 106 119 100 95Z" fill="#ffd27a"/><circle cx="100" cy="90" r="7" fill="#f2a31c"/></g>`;
+  return { defs, body };
+}
+function bottleSvg(p) { const b = bottleG(p); return `<svg class="bottle" viewBox="0 0 200 260" role="img" aria-label="${esc(p.name)}"><defs>${b.defs}</defs>${b.body}</svg>`; }
+function portrait(p, o = {}) {
+  const h = +p.hue || 30, d = o.d || 0, n = o.mini ? 2 : o.hero ? 13 : 8;
+  let art;
+  if (p.image) art = `<img class="cut" src="${esc(p.image)}" alt="${esc(p.name)}" loading="lazy">`;
+  else if (o.hero) {
+    const a = bottleG(p, { bow: true }), oil = o.oil ? bottleG(o.oil) : null;
+    art = `<svg class="bottle" viewBox="0 0 280 260" role="img" aria-label="${esc(p.name)}"><defs>${a.defs}${oil ? oil.defs : ''}</defs><g transform="translate(10 0)">${a.body}</g>${oil ? `<g transform="translate(127 50) scale(.78)">${oil.body}</g>` : ''}</svg>`;
+  } else art = bottleSvg(p);
+  const cap = !o.mini && !o.hero && notesOf(p).length ? `<span class="cap-notes">${notesOf(p).slice(0, 3).map(noteName).map(esc).join(', ')}</span>` : '';
+  return `<span class="frame portrait${o.hero ? ' hero-shot' : ''}" style="--h:${h}"><span class="bg"></span><span class="bokeh" aria-hidden="true">${bokehHtml(p.id + (o.hero ? 'h' : ''), h, n, o.hero)}</span><span class="table"></span>${art}<span class="vig"></span>${cap}${!o.mini && d ? `<span class="tag-badge off">${t('off', { pct: d })}</span>` : ''}${!o.mini && p.sample ? `<span class="tag-badge sample">${t('sample')}</span>` : ''}</span>`;
+}
+const thumb = p => `<div class="th">${portrait(p, { mini: true })}</div>`;
+
+/* ============ toast, theme ============ */
+let toastTimer;
+function toast(msg) {
+  const el = document.getElementById('toast-root');
+  el.innerHTML = `<div class="toast" role="status">${esc(msg)}</div>`;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.innerHTML = ''; }, 2200);
+}
+function applyTheme() {
+  const r = document.documentElement;
+  if (S.theme === 'light' || S.theme === 'dark') r.setAttribute('data-theme', S.theme); else r.removeAttribute('data-theme');
+}
+const effectiveTheme = () => S.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+const LITE = (() => { try { return !!(navigator.connection && navigator.connection.saveData) || matchMedia('(prefers-reduced-motion: reduce)').matches || (navigator.deviceMemory && navigator.deviceMemory <= 2); } catch (e) { return false; } })();
+if (LITE) document.documentElement.classList.add('lite');
+
+/* ============ WhatsApp ============ */
+function waLink(text) { return `https://wa.me/${String(D().settings.whatsapp || '').replace(/\D/g, '')}?text=${encodeURIComponent(text)}`; }
+function orderText(c) {
+  const L = [t('waHello')];
+  c.lines.forEach(l => L.push(`- ${l.qty} x ${l.p.name} ${l.p.size}: ${money(l.total)}`));
+  if (c.mode === 'ladder' && c.giftLine) L.push(`${t('waOffer')}: ${rewardText(c.ladder.tr)} (${c.giftLine.oil.name} ${c.giftLine.oil.size})`);
+  if (c.mode === 'bundle') L.push(`${t('waOffer')}: ${t('bundleOffer', { pct: D().settings.bundle.pct })}`);
+  L.push(`${t('waTotal')}: ${money(c.total)}`, '', t('waName'), t('waArea'));
+  return L.join('\n');
+}
+
+/* ============ shop view ============ */
+const ico = (id, cls = '') => `<svg class="${cls}" aria-hidden="true"><use href="#i-${id}"/></svg>`;
+function barHtml() {
+  const c = calc();
+  return `<div class="bar" id="bar"><div class="wrap">
+    <a class="logo" href="#top" data-act="home" aria-label="Lush Scentsations"><svg class="mark" aria-hidden="true"><use href="#ls-mark"/></svg><span class="wm"><b>LUSH</b><i>SCENTSATIONS</i></span></a>
+    <nav class="toplinks" aria-label="Main"><a href="#collection" data-act="goto" data-v="collection">${t('navShop')}</a><a href="#gifts" data-act="goto" data-v="gifts">${t('navGifts')}</a><a href="#layer" data-act="goto" data-v="layer">${t('navLayer')}</a><a href="#ask" data-act="goto" data-v="ask">${t('navAsk')}</a></nav>
+    <span class="seg" role="group" aria-label="${t('lang')}"><button data-act="lang" data-v="en" aria-pressed="${S.lang === 'en'}">EN</button><button data-act="lang" data-v="fr" aria-pressed="${S.lang === 'fr'}">FR</button></span>
+    <button class="icon-btn" data-act="theme" aria-label="${t('theme')}">${ico(effectiveTheme() === 'dark' ? 'sun' : 'moon')}</button>
+    <button class="icon-btn" data-act="cart-open" aria-label="${t('basket')}">${ico('bag')}${c.count ? `<span class="count">${c.count}</span>` : ''}</button></div></div>`;
+}
+function cardHtml(p) {
+  const d = discountPct(p), u = unitPrice(p);
+  const low = p.stock <= 0 ? t('soldOut') : p.stock <= 5 ? t('low', { n: p.stock }) : '';
+  return `<article class="card"><button class="frame-btn" data-act="open" data-id="${p.id}" aria-label="${t('details')}: ${esc(p.name)}">${portrait(p, { d })}</button>
+    <div class="meta"><div><h3>${esc(p.name)}</h3><p class="sub">${catName(p.category)}, ${esc(p.size)}</p></div>
+      <button class="plus" data-act="add" data-id="${p.id}" aria-label="${esc(t('addShort', { name: p.name }))}" ${p.stock <= 0 ? 'disabled' : ''}>${ico('plus')}</button></div>
+    <p class="price"><b>${money(u)}</b>${d ? `<s>${money(p.price)}</s>` : ''}${low ? `<span class="low">${low}</span>` : ''}</p></article>`;
+}
+function heroHtml() {
+  const L = D().settings.ladder, ps = D().products.filter(p => p.category === 'perfume' && p.stock > 0);
+  const p = ps.find(x => (x.tags || []).includes('bestseller')) || ps[0] || D().products[0];
+  const oils = D().products.filter(x => x.giftOil && x.stock > 0), oil = oils.find(x => !p || x.hue !== p.hue) || oils[0] || null;
+  return `<section class="hero" id="top"><div class="wrap hero-in"><div class="hero-copy"><h1>${t('heroH').split(/(?<=\.)\s/).map(x => `<span>${x}</span>`).join('')}</h1>
+      <p class="lede">${t('heroLede', { a: money(L[0].min), p: money(L[0].price), b: money(L[1].min) })}</p>
+      <div class="ctas"><button class="btn solid" data-act="goto" data-v="gifts">${t('ctaGifts')}</button><button class="btn" data-act="goto" data-v="collection">${t('ctaShop')}</button></div></div>
+    <div class="hero-art">${p ? portrait(p, { hero: true, oil }) : ''}<div class="sticker">${t('sticker', { min: money(L[1].min) })}</div></div></div></section>`;
+}
+function giftsInner() {
+  const c = calc(), cfg = D().settings, b = cfg.bundle;
+  return `<div class="tiers">${cfg.ladder.map(tr => {
+    const on = c.subtotal >= tr.min, pct = Math.min(100, c.subtotal / tr.min * 100);
+    return `<div class="tier ${on ? 'on' : ''}"><span class="fill" style="height:${on ? 100 : pct}%"></span><div class="amt">${nf(tr.min)}<small>FCFA</small></div><p class="rew">${esc(rewardText(tr))}</p><p class="st">${on ? t('unlocked') : t('togo', { amount: money(tr.min - c.subtotal) })}</p></div>`;
+  }).join('')}</div>
+  ${b.enabled ? `<div class="deal"><b>${t('dealT')}</b><span>${t('dealD', { n: b.n, pct: b.pct })}</span></div>` : ''}
+  <p class="basket-line">${t('yourBasket')}: <b>${money(c.subtotal)}</b></p>`;
+}
+const giftsHtml = () => `<section class="gifts" id="gifts"><div class="wrap"><h2>${t('giftsH')}</h2><p class="sub">${t('giftsSub')}</p><div id="gifts-slot">${giftsInner()}</div></div></section>`;
+function tagChips() {
+  const count = {};
+  D().products.forEach(p => (p.tags || []).forEach(k => { count[k] = (count[k] || 0) + 1; }));
+  const used = [...MOODS.filter(m => count[m]), ...Object.keys(count).filter(k => !MOODS.includes(k)).sort((a, b) => count[b] - count[a] || tagName(a).localeCompare(tagName(b))).slice(0, 8)];
+  if (S.filter.tag && !used.includes(S.filter.tag)) used.push(S.filter.tag);
+  return used.map(k => `<button class="chip" data-act="ftag" data-v="${esc(k)}" aria-pressed="${S.filter.tag === k}">${esc(tagName(k))}</button>`).join('');
+}
+function filtered() {
+  const f = S.filter;
+  let l = D().products.filter(p => (f.cat === 'all' || p.category === f.cat) && (!f.tag || (p.tags || []).includes(f.tag)) && inBudget(p, f.budget));
+  if (f.q) { const q = f.q.toLowerCase(); l = l.filter(p => (p.name + ' ' + (p.tags || []).map(tagName).join(' ') + ' ' + (p.notes || []).map(noteName).join(' ')).toLowerCase().includes(q)); }
+  if (f.sort === 'low') l = l.slice().sort((a, b) => unitPrice(a) - unitPrice(b));
+  if (f.sort === 'high') l = l.slice().sort((a, b) => unitPrice(b) - unitPrice(a));
+  return l;
+}
+const gridHtml = () => { const l = filtered(); return l.length ? l.map(cardHtml).join('') : `<p class="empty">${t('none')}</p>`; };
+function shopHtml() {
+  const f = S.filter;
+  return `<section class="section wrap" id="collection"><div class="sec-head"><div><h2>${t('collection')}</h2><p class="sub">${t('collectionSub')}</p></div><button class="btn solid" data-act="quiz">${t('ctaQuiz')}</button></div>
+    <div class="filters"><div class="row scroll" role="group">${['all', ...CATS].map(c => `<button class="chip" data-act="fcat" data-v="${c}" aria-pressed="${f.cat === c}">${c === 'all' ? t('all') : catName(c)}</button>`).join('')}</div>
+      <div class="row scroll" id="tag-row" role="group">${tagChips()}</div>
+      <div class="row wrap-row"><label class="vh" for="q">${t('search')}</label><input id="q" class="field-in grow" type="search" placeholder="${t('search')}" value="${esc(f.q)}" autocomplete="off">
+        <label class="vh" for="budget">${t('budget')}</label><select id="budget" class="field-in"><option value="">${t('bAny')}</option><option value="u10" ${f.budget === 'u10' ? 'selected' : ''}>${t('bU10', { a: nf(10000) })}</option><option value="m" ${f.budget === 'm' ? 'selected' : ''}>${t('bMid', { a: nf(10000), b: nf(25000) })}</option><option value="h" ${f.budget === 'h' ? 'selected' : ''}>${t('bHigh', { b: nf(25000) })}</option></select>
+        <label class="vh" for="sort">${t('sort')}</label><select id="sort" class="field-in">${[['featured', 'sFeatured'], ['low', 'sLow'], ['high', 'sHigh']].map(([v, k]) => `<option value="${v}" ${f.sort === v ? 'selected' : ''}>${t(k)}</option>`).join('')}</select></div></div>
+    <div class="grid" id="grid">${gridHtml()}</div></section>`;
+}
+function layerHtml() {
+  const ps = D().products.filter(p => p.category !== 'oil' && p.stock > 0), os = D().products.filter(p => p.category === 'oil' && p.stock > 0);
+  if (!ps.length || !os.length) return '';
+  if (!byId(S.layer.p) || byId(S.layer.p).category === 'oil') S.layer.p = ps[0].id;
+  if (!byId(S.layer.o) || byId(S.layer.o).category !== 'oil') S.layer.o = (os.find(o => o.giftOil) || os[0]).id;
+  return `<section class="section wrap" id="layer"><h2>${t('layerH')}</h2><p class="sub">${t('layerSub')}</p>
+    <div class="lab"><div class="pick"><label>${t('layerP')}<select id="lp" class="field-in">${ps.map(p => `<option value="${p.id}" ${p.id === S.layer.p ? 'selected' : ''}>${esc(p.name)}, ${money(unitPrice(p))}</option>`).join('')}</select></label>
+      <label>${t('layerO')}<select id="lo" class="field-in">${os.map(p => `<option value="${p.id}" ${p.id === S.layer.o ? 'selected' : ''}>${esc(p.name)}, ${money(unitPrice(p))}</option>`).join('')}</select></label>
+      <div id="lab-tot"></div></div><div id="lab-out"></div></div></section>`;
+}
+function layerResult() {
+  const p = byId(S.layer.p), o = byId(S.layer.o), out = document.getElementById('lab-out'), tot = document.getElementById('lab-tot');
+  if (!p || !o || !out) return;
+  const pn = notesOf(p), on = notesOf(o), last = pn[pn.length - 1];
+  const pool = pn.filter(n => n !== on[0] && n !== pn[0]), a = noteName(on[0] || o.name), b = noteName(pn[0] || p.name), c = noteName(pool[pool.length - 1] || last || p.name);
+  let art;
+  if (p.image || o.image) art = `<div class="duo duo-img">${[p, o].map(x => x.image ? `<img src="${esc(x.image)}" alt="${esc(x.name)}">` : bottleSvg(x)).join('')}</div>`;
+  else { const A1 = bottleG(p), B1 = bottleG(o); art = `<svg class="duo" viewBox="0 0 280 260" aria-hidden="true"><defs>${A1.defs}${B1.defs}</defs><g transform="translate(10 0)">${A1.body}</g><g transform="translate(127 50) scale(.78)">${B1.body}</g></svg>`; }
+  out.innerHTML = `<div class="out portrait" style="--h:${+p.hue || 30}"><span class="bg"></span><span class="bokeh" aria-hidden="true">${bokehHtml(p.id + o.id, +p.hue || 30, 10, false)}</span><span class="table"></span>
+    <div class="big">${[...on.slice(0, 1), ...pn.slice(0, 2)].map(n => `<span>${esc(noteName(n))}</span>`).join('')}</div>${art}<span class="vig"></span><p class="say">${t('layerSay', { a, b, c })}</p></div>`;
+  tot.innerHTML = `<div class="tot"><b>${money(unitPrice(p) + unitPrice(o))}</b><button class="btn solid" data-act="layer-add">${t('layerAdd')}</button></div>`;
+}
+const guideHtml = () => `<section class="section wrap"><h2>${t('guideH')}</h2><div class="guide"><div><h3>${t('gPerfume')}</h3><p>${t('gPerfumeD')}</p></div><div><h3>${t('gOil')}</h3><p>${t('gOilD')}</p></div><div><h3>${t('gMist')}</h3><p>${t('gMistD')}</p></div></div></section>`;
+const askHtml = () => `<section class="wrap" id="ask"><div class="advisor field" style="${fieldCSS(345, 28)}"><h2>${t('askH')}</h2><p>${t('askD')}</p><a class="btn" href="${waLink(t('waGeneric'))}" target="_blank" rel="noopener">${ico('wa')}${t('askBtn')}</a></div></section>`;
+const footHtml = () => `<footer class="site"><div class="wrap"><div><p class="tl">${t('tagline')}</p><p>© Lush Scentsations</p></div><a href="#admin" data-act="admin">${t('admin')}</a></div></footer>`;
+function dockHtml() {
+  const c = calc();
+  return c.count
+    ? `<div class="dock"><button class="btn solid main" data-act="cart-open"><span>${t('basket')} (${c.count})</span><span class="num">${money(c.total)}</span></button><a class="btn" style="background:var(--bg)" href="${waLink(t('waGeneric'))}" target="_blank" rel="noopener" aria-label="WhatsApp">${ico('wa')}</a></div>`
+    : `<div class="dock"><a class="btn solid main" href="${waLink(t('waGeneric'))}" target="_blank" rel="noopener"><span>${t('askBtn')}</span>${ico('wa')}</a></div>`;
+}
+function renderShop() {
+  document.getElementById('app').innerHTML =
+    `${barHtml()}
+     <main>${heroHtml()}${giftsHtml()}${shopHtml()}${layerHtml()}${guideHtml()}${askHtml()}</main>${footHtml()}<div id="dock-slot">${dockHtml()}</div>`;
+  layerResult();
+}
+function refreshShop() {
+  const g = document.getElementById('grid'); if (g) g.innerHTML = gridHtml();
+  const gs = document.getElementById('gifts-slot'); if (gs) gs.innerHTML = giftsInner();
+  const b = document.getElementById('bar'); if (b) b.outerHTML = barHtml();
+  const d = document.getElementById('dock-slot'); if (d) d.innerHTML = dockHtml();
+  if (document.getElementById('drawer')) renderDrawer();
+}
+
+/* ============ basket drawer ============ */
+function renderDrawer() {
+  const c = calc(), root = document.getElementById('drawer-root'), has = c.lines.length > 0;
+  const lines = c.lines.map(l => `<div class="line">${thumb(l.p)}<div><h4>${esc(l.p.name)}</h4><small>${esc(l.p.size)}, ${money(l.unit)}</small>
+    <div class="stepper"><button data-act="qty" data-id="${l.p.id}" data-d="-1" aria-label="−">−</button><span>${l.qty}</span><button data-act="qty" data-id="${l.p.id}" data-d="1" aria-label="+">+</button></div></div>
+    <div><div class="amt">${money(l.total)}</div><button class="rm" data-act="rm" data-id="${l.p.id}">${t('remove')}</button></div></div>`).join('');
+  const tiers = D().settings.ladder, max = tiers[tiers.length - 1].min, pct = Math.min(100, c.subtotal / max * 100);
+  const progress = `<div class="progress"><div class="meter"><i style="width:${pct}%"></i>${tiers.map(tr => `<u style="left:${Math.min(99, tr.min / max * 100)}%"></u>`).join('')}</div>
+    <p>${c.next ? t('moreToUnlock', { amount: `<b>${money(c.next.min - c.subtotal)}</b>`, reward: esc(rewardText(c.next)) }) : t('allUnlocked')}</p></div>`;
+  let offers = '';
+  if (c.ladder && c.bundle) {
+    offers = `<div class="offers"><h3>${t('chooseOffer')}</h3>
+      <button class="offer" data-act="mode" data-v="ladder" aria-pressed="${c.mode === 'ladder'}"><span class="r"></span><div><b>${t('ladderOffer', { reward: esc(rewardText(c.ladder.tr)) })}</b><span>${t('saves', { amount: money(c.ladder.saving) })}</span></div></button>
+      <button class="offer" data-act="mode" data-v="bundle" aria-pressed="${c.mode === 'bundle'}"><span class="r"></span><div><b>${t('bundleOffer', { pct: D().settings.bundle.pct })}</b><span>${t('saves', { amount: money(c.bundle.off) })}</span></div></button></div>`;
+  }
+  let gift = '';
+  if (c.mode === 'ladder' && c.giftLine) {
+    const o = c.giftLine.oil;
+    gift = `<div class="gift-line"><p class="tl">${t('gift')}</p><div class="line">${thumb(o)}<div><h4>${esc(o.name)}</h4><small>${esc(o.size)}</small></div><div class="amt">${c.giftLine.price ? money(c.giftLine.price) : t('free')}</div></div>
+      ${c.oils.length > 1 ? `<label>${t('chooseOil')}<select class="field-in" id="gift-oil">${c.oils.map(x => `<option value="${x.id}" ${x.id === o.id ? 'selected' : ''}>${esc(x.name)}</option>`).join('')}</select></label>` : ''}</div>`;
+  }
+  const totals = `<div class="totals"><div><span>${t('sub')}</span><span>${money(c.subtotal)}</span></div>${c.savings ? `<div class="save"><span>${t('save')}</span><span>−${money(c.savings)}</span></div>` : ''}<div class="total"><span>${t('total')}</span><span>${money(c.total)}</span></div></div>`;
+  root.innerHTML = `<div class="overlay" data-act="cart-close"></div><aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="${t('basket')}">
+    <header><h2>${t('basket')}</h2><button class="icon-btn" data-act="cart-close" aria-label="${t('close')}">${ico('x')}</button></header>
+    <div class="scroll">${has ? lines + progress + offers + gift : `<p class="empty-cart">${t('empty')}</p>`}</div>
+    ${has ? `<footer>${totals}<a class="btn solid block" href="${waLink(orderText(c))}" target="_blank" rel="noopener">${ico('wa')}${t('orderWa')}</a><button class="btn block" data-act="momo-open">${t('payMomo')}</button><p class="hint">${t('waNote')}</p></footer>` : ''}</aside>`;
+}
+function openDrawer() { renderDrawer(); document.body.style.overflow = 'hidden'; }
+function closeDrawer() { document.getElementById('drawer-root').innerHTML = ''; document.body.style.overflow = ''; }
+
+/* ============ modals: product, quiz, momo ============ */
+function openProduct(id) {
+  const p = byId(id); if (!p) return;
+  const d = discountPct(p), u = unitPrice(p), n = notesOf(p).map(noteName);
+  const say = n.length >= 3 ? t('open', { a: n[0], b: n[1], c: n[2] }) : n.length === 2 ? t('open2', { a: n[0], b: n[1] }) : n.length === 1 ? t('open1', { a: n[0] }) : '';
+  document.getElementById('modal-root').innerHTML = `<div class="modal-bg" data-act="modal-bg"><div class="modal" role="dialog" aria-modal="true" aria-label="${esc(p.name)}">
+    <button class="icon-btn x" data-act="modal-close" aria-label="${t('close')}">${ico('x')}</button>
+    <div class="pdp"><div class="left">${portrait(p)}</div>
+      <div class="info"><h2>${esc(p.name)}</h2><p class="desc">${catName(p.category)}, ${esc(p.size)}</p>${say ? `<p class="say">${esc(say)}</p>` : ''}<p class="desc">${esc(p.desc?.[S.lang] || p.desc?.en || '')}</p>
+        <div class="tags">${(p.tags || []).map(k => `<span>${esc(tagName(k))}</span>`).join('')}</div>
+        <p class="price"><b>${money(u)}</b>${d ? `<s>${money(p.price)}</s>` : ''}</p>
+        <div class="acts"><button class="btn solid" data-act="add" data-id="${p.id}" data-close="1" ${p.stock <= 0 ? 'disabled' : ''}>${p.stock <= 0 ? t('soldOut') : t('add')}</button>
+          <a class="btn" href="${waLink(`${t('waGeneric')} (${p.name})`)}" target="_blank" rel="noopener">${ico('wa')}${t('askAbout')}</a></div></div></div></div></div>`;
+}
+function closeModal() { document.getElementById('modal-root').innerHTML = ''; }
+
+const QUIZ = [
+  { k: 'where', q: 'q1', o: [['work', 'qWork', ['work']], ['night', 'qNight', ['night']], ['weekend', 'qWeekend', ['weekend']], ['gift', 'qGift', ['gift']]] },
+  { k: 'vibe', q: 'q2', o: [['fresh', 'qFresh', ['fresh', 'musk', 'citrus']], ['warm', 'qWarm', ['vanilla', 'gourmand', 'amber', 'spicy']], ['deep', 'qDeep', ['oud', 'leather', 'woody']], ['floral', 'qFloral', ['rose', 'floral']]] },
+  { k: 'budget', q: 'q3', o: [['u10', 'qU10'], ['m', 'qMid'], ['h', 'qHigh'], ['any', 'qAny']] }
+];
+const Z = { step: 0, ans: {} };
+const bv = () => ({ a: nf(10000), b: nf(25000) });
+function renderQuiz() {
+  let body;
+  if (Z.step < QUIZ.length) {
+    const q = QUIZ[Z.step];
+    body = `<p class="step">${t('quizStep', { n: Z.step + 1 })}</p><h2>${t(q.q)}</h2><div class="opts">${q.o.map(o => `<button class="opt" data-act="qa" data-v="${o[0]}">${t(o[1], bv())}</button>`).join('')}</div>`;
+  } else {
+    const res = quizResults();
+    const lab = k => { const q = QUIZ.find(x => x.k === k), o = q.o.find(x => x[0] === Z.ans[k]); return t(o[1], bv()); };
+    const msg = t('waQuiz', { where: lab('where'), vibe: lab('vibe'), budget: lab('budget'), list: res.map(p => p.name).join(', ') });
+    body = `<p class="step">${t('quizDone')}</p><h2>${t('quizRes')}</h2><div class="res">${res.map(cardHtml).join('')}</div>
+      <div class="btns"><button class="btn solid" data-act="quiz-add">${t('quizAddAll')}</button><a class="btn" href="${waLink(msg)}" target="_blank" rel="noopener">${ico('wa')}${t('askWa')}</a><button class="btn" data-act="quiz-again">${t('quizRestart')}</button></div>`;
+  }
+  document.getElementById('modal-root').innerHTML = `<div class="modal-bg" data-act="modal-bg"><div class="modal" role="dialog" aria-modal="true" style="max-width:760px"><button class="icon-btn x" data-act="modal-close" aria-label="${t('close')}">${ico('x')}</button><div class="quiz">${body}</div></div></div>`;
+}
+function quizResults() {
+  const where = QUIZ[0].o.find(o => o[0] === Z.ans.where)[2], vibe = QUIZ[1].o.find(o => o[0] === Z.ans.vibe)[2], b = Z.ans.budget;
+  return D().products.filter(p => p.stock > 0).map(p => {
+    const tg = p.tags || []; let s = 0;
+    where.forEach(w => { if (tg.includes(w)) s += 4; });
+    vibe.forEach(v => { if (tg.includes(v)) s += 2; });
+    s += inBudget(p, b) ? 3 : -6;
+    if ((b === 'h' || b === 'any') && p.category === 'perfume') s += 1;
+    return { p, s };
+  }).sort((x, y) => y.s - x.s || unitPrice(y.p) - unitPrice(x.p)).slice(0, 3).map(x => x.p);
+}
+let momoNet = 'mtn';
+function openMomo() {
+  const c = calc();
+  document.getElementById('modal-root').innerHTML = `<div class="modal-bg" data-act="modal-bg"><div class="modal" role="dialog" aria-modal="true" aria-label="${t('momoTitle')}" style="max-width:520px"><button class="icon-btn x" data-act="modal-close" aria-label="${t('close')}">${ico('x')}</button>
+    <div class="momo"><h2>${t('momoTitle')}</h2><p class="notice">${t('momoDemo')}</p><div><p class="mood-q">${t('momoNet')}</p><div class="nets"><button class="net" data-act="net" data-v="mtn" aria-pressed="${momoNet === 'mtn'}">MTN MoMo</button><button class="net" data-act="net" data-v="orange" aria-pressed="${momoNet === 'orange'}">Orange Money</button></div></div>
+      <label class="lab-f">${t('momoPhone')}<input class="field-in" id="momo-phone" type="tel" inputmode="tel" placeholder="6XX XX XX XX" autocomplete="off"></label>
+      <div class="totals"><div class="total"><span>${t('total')}</span><span>${money(c.total)}</span></div></div>
+      <button class="btn solid block" data-act="momo-go">${t('momoGo')}</button><p class="hint" id="momo-msg"></p></div></div></div>`;
+}
+
+/* ============ admin ============ */
+const marginOf = (p, price) => price > 0 && p.cost > 0 ? (price - p.cost) / price * 100 : null;
+function marginCell(p) {
+  const m = marginOf(p, unitPrice(p));
+  if (m == null) return '<span class="m-warn">No cost</span>';
+  return `<span class="${m < 0 ? 'm-bad' : m < 15 ? 'm-warn' : 'm-good'}">${m.toFixed(0)}%</span>`;
+}
+const allTags = () => [...new Set([...MOODS, ...D().products.flatMap(p => p.tags || [])])].sort();
+function adminProducts() {
+  const q = A.q.toLowerCase();
+  const l = D().products.filter(p => (!A.cat || p.category === A.cat) && (!A.tag || (p.tags || []).includes(A.tag)) && (!q || (p.name + ' ' + (p.tags || []).join(' ')).toLowerCase().includes(q)));
+  const rows = l.map(p => {
+    const d = discountPct(p);
+    return `<tr><td><input type="checkbox" data-sel="${p.id}" ${A.sel.has(p.id) ? 'checked' : ''} aria-label="Select ${esc(p.name)}"></td><td>${thumb(p)}</td>
+      <td class="nm"><b>${esc(p.name)}</b><small>${esc(p.size)}, ${p.category}${p.sample ? ', sample' : ''}</small></td>
+      <td>${nf(p.price)}${d ? `<br><small class="m-good">${nf(unitPrice(p))} (−${d}%)</small>` : ''}</td><td>${p.cost ? nf(p.cost) : '—'}</td><td>${marginCell(p)}</td><td>${p.stock}</td>
+      <td>${(p.tags || []).map(k => `<span class="pill">${esc(k)}</span>`).join('')}${p.giftOil ? '<span class="pill on">gift oil</span>' : ''}${p.eligible ? '<span class="pill on">in offers</span>' : ''}</td>
+      <td><div class="acts"><button class="btn sm" data-act="p-edit" data-id="${p.id}">Edit</button><button class="btn sm bad" data-act="p-del" data-id="${p.id}">${A.delArm === p.id ? 'Confirm delete' : 'Delete'}</button></div></td></tr>`;
+  }).join('');
+  const bulk = A.sel.size ? `<div class="bulk"><b>${A.sel.size} selected</b><input class="field-in" id="bulk-tag" placeholder="tag, e.g. oud" list="taglist" style="max-width:170px" aria-label="Tag"><button class="btn sm" data-act="bulk-tag-add">Add tag</button><button class="btn sm" data-act="bulk-tag-rm">Remove tag</button>
+    <input class="field-in" id="bulk-pct" type="number" min="1" max="90" placeholder="% off" style="max-width:96px" aria-label="Percent off"><button class="btn sm solid" data-act="bulk-disc">Discount these</button><button class="btn sm" data-act="bulk-clear">Clear</button></div>` : '';
+  return `<div class="panel"><div class="row wrap-row"><input class="field-in grow" id="a-q" type="search" placeholder="Search products" value="${esc(A.q)}" aria-label="Search products">
+      <select class="field-in" id="a-cat" aria-label="Category"><option value="">All categories</option>${CATS.map(c => `<option value="${c}" ${A.cat === c ? 'selected' : ''}>${c}</option>`).join('')}</select>
+      <select class="field-in" id="a-tag" aria-label="Tag"><option value="">All tags</option>${allTags().map(k => `<option value="${esc(k)}" ${A.tag === k ? 'selected' : ''}>${esc(k)}</option>`).join('')}</select>
+      <button class="btn solid" data-act="p-new">Add product</button></div>
+    <datalist id="taglist">${allTags().map(k => `<option value="${esc(k)}">`).join('')}</datalist>${bulk}
+    <div class="tbl-wrap"><table><thead><tr><th><input type="checkbox" data-selall="1" aria-label="Select all"></th><th></th><th>Product</th><th>Price</th><th>Cost</th><th>Margin</th><th>Stock</th><th>Tags</th><th></th></tr></thead><tbody>${rows || '<tr><td colspan="9" style="color:var(--muted);padding:28px">No products match.</td></tr>'}</tbody></table></div>
+    <p class="note">Margin uses the price after discounts. Under 15% shows amber, below zero shows red. The tags work, night, weekend and gift drive the “I’m dressing for” picks on the home page.</p></div>`;
+}
+const targetLabel = g => g.type === 'all' ? 'All products' : g.type === 'category' ? 'Category: ' + g.value : g.type === 'tag' ? 'Tag: ' + g.value : (g.value || []).length + ' selected products';
+function adminDiscounts() {
+  const nd = A.newDisc;
+  const rows = D().discounts.map(r => {
+    const hit = D().products.filter(p => ruleMatches(r, p)), below = hit.filter(p => p.cost > 0 && Math.round(p.price * (100 - r.pct) / 100) < p.cost).length;
+    return `<tr><td><b>${esc(r.name)}</b></td><td>${r.pct}%</td><td>${esc(targetLabel(r.target))}</td><td>${hit.length}</td><td>${below ? `<span class="m-bad">${below} below cost</span>` : '<span class="m-good">OK</span>'}</td>
+      <td><button class="btn sm" data-act="d-toggle" data-id="${r.id}">${r.active ? 'Active' : 'Paused'}</button></td><td><div class="acts"><button class="btn sm bad" data-act="d-del" data-id="${r.id}">Delete</button></div></td></tr>`;
+  }).join('');
+  return `<div class="panel"><div class="tbl-wrap"><table style="min-width:660px"><thead><tr><th>Name</th><th>Off</th><th>Applies to</th><th>Products</th><th>Cost check</th><th>Status</th><th></th></tr></thead><tbody>${rows || '<tr><td colspan="7" style="color:var(--muted);padding:28px">No discounts yet.</td></tr>'}</tbody></table></div>
+    <div class="box"><h3>New discount</h3><div class="cols"><label class="lab-f">Name<input class="field-in" id="nd-name" placeholder="Weekend oils"></label><label class="lab-f">Percent off<input class="field-in" id="nd-pct" type="number" min="1" max="90" placeholder="10"></label>
+      <label class="lab-f">Applies to<select class="field-in" id="nd-type"><option value="all" ${nd.target === 'all' ? 'selected' : ''}>All products</option><option value="category" ${nd.target === 'category' ? 'selected' : ''}>A category</option><option value="tag" ${nd.target === 'tag' ? 'selected' : ''}>A tag</option></select></label>
+      ${nd.target === 'category' ? `<label class="lab-f">Category<select class="field-in" id="nd-val">${CATS.map(c => `<option>${c}</option>`).join('')}</select></label>` : ''}${nd.target === 'tag' ? `<label class="lab-f">Tag<select class="field-in" id="nd-val">${allTags().map(k => `<option>${esc(k)}</option>`).join('')}</select></label>` : ''}</div>
+      <div><button class="btn solid" data-act="d-add">Add discount</button></div>
+      <p class="note">To discount a hand-picked group, tick the products on the Products tab and use “Discount these”. If several discounts apply to one product, the largest is used.</p></div></div>`;
+}
+function giftCost() {
+  const cfg = D().settings, oils = D().products.filter(p => p.giftOil && p.cost > 0);
+  if (!oils.length) return '<p class="note">Mark some oils as gift oils and give them a cost to see what each tier costs you.</p>';
+  const avg = oils.reduce((a, p) => a + p.cost, 0) / oils.length, avgRetail = oils.reduce((a, p) => a + p.price, 0) / oils.length;
+  const elig = D().products.filter(p => p.eligible && p.category !== 'oil'), avgFrag = elig.length ? elig.reduce((a, p) => a + unitPrice(p), 0) / elig.length : 0;
+  const rows = cfg.ladder.map(tr => {
+    let cost = avg, what = 'free oil';
+    if (tr.type === 'oilSpecial') { cost = Math.max(0, avg - tr.price); what = `oil sold at ${nf(tr.price)}`; }
+    if (tr.type === 'oilFreePlusOff') { cost = avg + avgFrag * tr.pct / 100; what = `free oil and ${tr.pct}% off a perfume`; }
+    return `<tr><td>${nf(tr.min)} FCFA</td><td>${what}</td><td>${nf(cost)} FCFA</td><td>${(cost / tr.min * 100).toFixed(1)}% of the order</td></tr>`;
+  }).join('');
+  return `<div class="tbl-wrap"><table style="min-width:560px"><thead><tr><th>Order from</th><th>Gift</th><th>Average cost to you</th><th>Share of the order</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <p class="note">Based on the average cost of your gift oils (${nf(avg)} FCFA cost, ${nf(avgRetail)} FCFA retail) and the average eligible perfume price. Compare this with your margin before launching.</p>`;
+}
+function adminOffer() {
+  const s = D().settings, l = s.ladder, b = s.bundle;
+  return `<div class="panel"><div class="box"><h3>Contact</h3><div class="cols"><label class="lab-f">WhatsApp number, with country code, digits only<input class="field-in" id="s-wa" inputmode="numeric" placeholder="237 6XX XXX XXX" value="${esc(s.whatsapp)}"></label></div>
+      <p class="note">Until this is set, “Order on WhatsApp” opens WhatsApp and asks the customer to pick a contact.</p></div>
+    <div class="box"><h3>Birthday campaign</h3><div class="checks"><label><input type="checkbox" id="s-on" ${s.campaignOn ? 'checked' : ''}> Campaign is running (gift ladder and bundle apply)</label></div>
+      <div class="tier-row"><b>Tier 1</b><label class="lab-f">Spend from (FCFA)<input class="field-in" id="s-t1" type="number" value="${l[0].min}"></label><label class="lab-f">Oil price for the customer (FCFA)<input class="field-in" id="s-t1p" type="number" value="${l[0].price}"></label></div>
+      <div class="tier-row"><b>Tier 2, free oil</b><label class="lab-f">Spend from (FCFA)<input class="field-in" id="s-t2" type="number" value="${l[1].min}"></label></div>
+      <div class="tier-row"><b>Tier 3, free oil and a discount</b><label class="lab-f">Spend from (FCFA)<input class="field-in" id="s-t3" type="number" value="${l[2].min}"></label><label class="lab-f">Percent off one perfume<input class="field-in" id="s-t3p" type="number" value="${l[2].pct}"></label></div>
+      <div class="tier-row"><b>Double Scent Deal</b><label class="lab-f">Perfumes in the deal<input class="field-in" id="s-bn" type="number" min="2" value="${b.n}"></label><label class="lab-f">Percent off<input class="field-in" id="s-bp" type="number" value="${b.pct}"></label></div>
+      <div class="checks"><label><input type="checkbox" id="s-be" ${b.enabled ? 'checked' : ''}> Double Scent Deal is enabled</label></div>
+      <p class="note">One offer per order: the customer gets the better of the gift ladder and the bundle, and can switch. Only products marked “in offers” count toward the perfume deals. Keep the tier amounts in rising order.</p></div>
+    <div class="box"><h3>What the gifts cost you</h3>${giftCost()}</div></div>`;
+}
+const adminBackup = () => `<div class="panel"><div class="box"><h3>Backup and restore</h3><p class="note">Changes are saved in this browser only. Copy the backup below to keep a safe copy, or paste one here to restore it.</p>
+    <textarea class="field-in json" id="bk" spellcheck="false" aria-label="Backup JSON"></textarea>
+    <div class="row wrap-row"><button class="btn" data-act="bk-copy">Copy backup</button><button class="btn solid" data-act="bk-restore">Restore from text</button><button class="btn bad" data-act="reset-seed">${A.resetArm ? 'Confirm: replace everything with sample data' : 'Reset to sample data'}</button></div></div></div>`;
+let draft = null;
+function adminForm(p) {
+  const isNew = !byId(p.id);
+  return `<div class="modal-bg"><div class="modal" role="dialog" aria-modal="true" aria-label="Product"><button class="icon-btn x" data-act="modal-close" aria-label="Close">${ico('x')}</button>
+    <div class="form"><h2>${isNew ? 'Add product' : 'Edit product'}</h2>
+      <div class="cols"><label class="lab-f">Name<input class="field-in" id="f-name" value="${esc(p.name)}"></label><label class="lab-f">Category<select class="field-in" id="f-cat">${CATS.map(c => `<option value="${c}" ${p.category === c ? 'selected' : ''}>${c}</option>`).join('')}</select></label><label class="lab-f">Size<input class="field-in" id="f-size" value="${esc(p.size)}" placeholder="100 ml"></label></div>
+      <div class="cols"><label class="lab-f">Price (FCFA)<input class="field-in" id="f-price" type="number" min="0" value="${p.price}"></label><label class="lab-f">Your cost (FCFA)<input class="field-in" id="f-cost" type="number" min="0" value="${p.cost || ''}"></label><label class="lab-f">In stock<input class="field-in" id="f-stock" type="number" min="0" value="${p.stock}"></label></div>
+      <label class="lab-f">Scent notes, up to three, separated by commas<input class="field-in" id="f-notes" value="${esc((p.notes || []).join(', '))}" placeholder="saffron, oud, amber"></label>
+      <label class="lab-f">Tags, separated by commas (use work, night, weekend, gift for the mood picks)<input class="field-in" id="f-tags" list="taglist" value="${esc((p.tags || []).join(', '))}" placeholder="oud, night, bestseller"></label>
+      <div class="previewbox"><div id="f-frame">${portrait(p, { mini: true })}</div><label class="lab-f">Colour of this scent<input id="f-hue" type="range" min="0" max="359" value="${p.hue}"></label></div>
+      <div class="cols"><label class="lab-f">Description in English<textarea class="field-in" id="f-den">${esc(p.desc?.en || '')}</textarea></label><label class="lab-f">Description en français<textarea class="field-in" id="f-dfr">${esc(p.desc?.fr || '')}</textarea></label></div>
+      <div class="checks"><label><input type="checkbox" id="f-elig" ${p.eligible ? 'checked' : ''}> In the birthday perfume offers</label><label><input type="checkbox" id="f-gift" ${p.giftOil ? 'checked' : ''}> Can be chosen as a gift oil</label><label><input type="checkbox" id="f-sample" ${p.sample ? 'checked' : ''}> Sample item (shows a Sample badge)</label></div>
+      <div class="row wrap-row"><label class="btn sm" for="f-img" style="cursor:pointer">Upload photo</label><input id="f-img" type="file" accept="image/*" class="vh"><button class="btn sm" data-act="img-clear">Remove photo</button><span class="note">Best: a bottle cut out on a transparent background (PNG). It sits on the colour field.</span></div>
+      <div class="row wrap-row" style="justify-content:flex-end"><button class="btn" data-act="modal-close">Cancel</button><button class="btn solid" data-act="p-save">Save product</button></div></div></div></div>`;
+}
+function renderAdmin() {
+  const tabs = [['products', 'Products'], ['discounts', 'Discounts'], ['offer', 'Offer and settings'], ['backup', 'Backup']];
+  const body = A.tab === 'products' ? adminProducts() : A.tab === 'discounts' ? adminDiscounts() : A.tab === 'offer' ? adminOffer() : adminBackup();
+  document.getElementById('app').innerHTML = `<div class="bar"><div class="wrap"><a class="logo" href="#top" data-act="home"><svg class="mark" aria-hidden="true"><use href="#ls-mark"/></svg><span class="wm"><b>LUSH</b><i>SCENTSATIONS</i></span></a>
+      <a class="btn sm" href="#top" data-act="home">Back to the shop</a><button class="icon-btn" data-act="theme" aria-label="${t('theme')}">${ico(effectiveTheme() === 'dark' ? 'sun' : 'moon')}</button></div></div>
+    <main class="wrap admin"><h1>Products, discounts and offers</h1><p class="lede">Add or change products, group them with tags, and set discounts. Prototype note: there is no login yet, and changes are saved in this browser only.</p>
+      <div class="tabs" role="tablist">${tabs.map(([k, n]) => `<button class="chip" data-act="tab" data-v="${k}" aria-pressed="${A.tab === k}">${n}</button>`).join('')}</div>${body}</main>`;
+  if (A.tab === 'backup') { const bk = document.getElementById('bk'); if (bk) bk.value = JSON.stringify(S.data, null, 1); }
+}
+
+/* ============ render + routing ============ */
+function render() { document.documentElement.lang = S.lang; if (S.route === 'admin') renderAdmin(); else renderShop(); }
+function route() { S.route = location.hash === '#admin' ? 'admin' : 'shop'; closeDrawer(); closeModal(); render(); window.scrollTo(0, 0); }
+addEventListener('hashchange', route);
+
+/* ============ actions ============ */
+function scrollToId(id) { const el = document.getElementById(id); if (el) el.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }); }
+function addToCart(id, quiet) {
+  const p = byId(id); if (!p || p.stock <= 0) return false;
+  const cur = S.cart[id] || 0;
+  if (cur >= p.stock) { toast(`${p.name}: ${t('low', { n: p.stock })}`); return false; }
+  S.cart[id] = cur + 1; saveCart(); refreshShop(); if (!quiet) toast(`${p.name} +1`); return true;
+}
+const parseTags = s => [...new Set(String(s).split(',').map(x => x.trim().toLowerCase().replace(/\s+/g, '-')).filter(Boolean))];
+const parseNotes = s => [...new Set(String(s).split(',').map(x => x.trim().toLowerCase()).filter(Boolean))].slice(0, 3);
+function resizeImage(file, max = 900) {
+  return new Promise((res, rej) => {
+    const fr = new FileReader(); fr.onerror = rej;
+    fr.onload = () => {
+      const im = new Image(); im.onerror = rej;
+      im.onload = () => {
+        const k = Math.min(1, max / Math.max(im.width, im.height)), c = document.createElement('canvas');
+        c.width = Math.round(im.width * k); c.height = Math.round(im.height * k);
+        c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
+        res(c.toDataURL('image/webp', 0.86));
+      };
+      im.src = fr.result;
+    };
+    fr.readAsDataURL(file);
+  });
+}
+const blankProduct = () => ({ id: uid(), name: '', category: 'perfume', size: '100 ml', price: 0, cost: 0, stock: 10, tags: [], hue: Math.floor(Math.random() * 360), notes: [], image: null, desc: { en: '', fr: '' }, eligible: true, giftOil: false, sample: false });
+function openForm(p) { draft = JSON.parse(JSON.stringify(p)); document.getElementById('modal-root').innerHTML = adminForm(draft); }
+function readForm() {
+  const g = id => document.getElementById(id);
+  draft.name = g('f-name').value.trim(); draft.category = g('f-cat').value; draft.size = g('f-size').value.trim();
+  draft.price = Math.max(0, +g('f-price').value || 0); draft.cost = Math.max(0, +g('f-cost').value || 0); draft.stock = Math.max(0, Math.floor(+g('f-stock').value || 0));
+  draft.tags = parseTags(g('f-tags').value); draft.notes = parseNotes(g('f-notes').value); draft.hue = +g('f-hue').value;
+  draft.desc = { en: g('f-den').value.trim(), fr: g('f-dfr').value.trim() };
+  draft.eligible = g('f-elig').checked; draft.giftOil = g('f-gift').checked; draft.sample = g('f-sample').checked;
+}
+function refreshFormFrame() { readForm(); const f = document.getElementById('f-frame'); if (f) f.innerHTML = portrait(draft, { mini: true }); }
+
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-act]'); if (!el) return;
+  const a = el.dataset.act, v = el.dataset.v, id = el.dataset.id;
+  if (el.tagName === 'A' && ['goto', 'home'].includes(a)) e.preventDefault();
+  switch (a) {
+    case 'lang': S.lang = v; store.set(K.lang, v); render(); if (document.getElementById('drawer')) renderDrawer(); break;
+    case 'theme': S.theme = effectiveTheme() === 'dark' ? 'light' : 'dark'; store.set(K.theme, S.theme); applyTheme(); render(); break;
+    case 'goto': scrollToId(v); break;
+    case 'home': if (S.route === 'admin') { try { history.replaceState(null, '', location.pathname + location.search); } catch (x) { location.hash = ''; } route(); } else window.scrollTo({ top: 0 }); break;
+    case 'cart-open': openDrawer(); break;
+    case 'cart-close': closeDrawer(); break;
+    case 'add': addToCart(id); if (el.dataset.close) closeModal(); break;
+    case 'qty': { const p = byId(id), n = (S.cart[id] || 0) + (+el.dataset.d); if (n <= 0) delete S.cart[id]; else S.cart[id] = Math.min(n, p ? Math.max(1, p.stock) : n); saveCart(); refreshShop(); break; }
+    case 'rm': delete S.cart[id]; saveCart(); refreshShop(); break;
+    case 'mode': S.offerMode = v; refreshShop(); break;
+    case 'fcat': S.filter.cat = v; document.querySelectorAll('[data-act="fcat"]').forEach(c => c.setAttribute('aria-pressed', c.dataset.v === v)); document.getElementById('grid').innerHTML = gridHtml(); break;
+    case 'ftag': S.filter.tag = S.filter.tag === v ? '' : v; document.getElementById('tag-row').innerHTML = tagChips(); document.getElementById('grid').innerHTML = gridHtml(); break;
+    case 'open': openProduct(id); break;
+    case 'modal-close': closeModal(); break;
+    case 'modal-bg': if (e.target === el && S.route === 'shop') closeModal(); break;
+    case 'quiz': Z.step = 0; Z.ans = {}; renderQuiz(); break;
+    case 'qa': Z.ans[QUIZ[Z.step].k] = v; Z.step++; renderQuiz(); break;
+    case 'quiz-add': quizResults().forEach(p => addToCart(p.id, true)); closeModal(); openDrawer(); break;
+    case 'quiz-again': Z.step = 0; Z.ans = {}; renderQuiz(); break;
+    case 'layer-add': addToCart(S.layer.p, true); addToCart(S.layer.o, true); toast(`${byId(S.layer.p).name} + ${byId(S.layer.o).name}`); break;
+    case 'momo-open': openMomo(); break;
+    case 'net': momoNet = v; document.querySelectorAll('.net').forEach(n => n.setAttribute('aria-pressed', n.dataset.v === v)); break;
+    case 'momo-go': document.getElementById('momo-msg').textContent = t('momoDone', { amount: money(calc().total) }); break;
+    /* admin */
+    case 'tab': A.tab = v; A.delArm = null; A.resetArm = false; renderAdmin(); break;
+    case 'p-new': openForm(blankProduct()); break;
+    case 'p-edit': openForm(byId(id)); break;
+    case 'p-save': {
+      readForm(); if (!draft.name) { toast('Add a name first'); break; }
+      const i = D().products.findIndex(p => p.id === draft.id); if (i >= 0) D().products[i] = draft; else D().products.push(draft);
+      save(); closeModal(); renderAdmin(); toast('Saved'); break;
+    }
+    case 'p-del':
+      if (A.delArm === id) { D().products = D().products.filter(p => p.id !== id); delete S.cart[id]; A.sel.delete(id); A.delArm = null; save(); saveCart(); toast('Deleted'); } else A.delArm = id;
+      renderAdmin(); break;
+    case 'img-clear': draft.image = null; refreshFormFrame(); break;
+    case 'bulk-clear': A.sel.clear(); renderAdmin(); break;
+    case 'bulk-tag-add': case 'bulk-tag-rm': {
+      const tg = parseTags(document.getElementById('bulk-tag').value)[0]; if (!tg) { toast('Type a tag first'); break; }
+      D().products.forEach(p => { if (A.sel.has(p.id)) { p.tags = p.tags || []; if (a === 'bulk-tag-add') { if (!p.tags.includes(tg)) p.tags.push(tg); } else p.tags = p.tags.filter(x => x !== tg); } });
+      save(); renderAdmin(); toast(a === 'bulk-tag-add' ? 'Tag added' : 'Tag removed'); break;
+    }
+    case 'bulk-disc': {
+      const raw = document.getElementById('bulk-pct').value; if (!raw) { toast('Enter a percent first'); break; }
+      const pct = Math.min(90, Math.max(1, +raw || 0));
+      D().discounts.push({ id: uid(), name: `${pct}% off ${A.sel.size} products`, pct, target: { type: 'products', value: [...A.sel] }, active: true });
+      save(); A.sel.clear(); A.tab = 'discounts'; renderAdmin(); toast('Discount created'); break;
+    }
+    case 'd-toggle': { const r = D().discounts.find(x => x.id === id); r.active = !r.active; save(); renderAdmin(); break; }
+    case 'd-del': D().discounts = D().discounts.filter(x => x.id !== id); save(); renderAdmin(); break;
+    case 'd-add': {
+      const g = i => document.getElementById(i);
+      if (!g('nd-pct').value) { toast('Enter a percent first'); break; }
+      const pct = Math.min(90, Math.max(1, +g('nd-pct').value || 0)), type = g('nd-type').value;
+      D().discounts.push({ id: uid(), name: g('nd-name').value.trim() || `${pct}% off`, pct, target: type === 'all' ? { type } : { type, value: g('nd-val').value }, active: true });
+      save(); A.newDisc = { target: 'all' }; renderAdmin(); toast('Discount added'); break;
+    }
+    case 'bk-copy': { const tx = document.getElementById('bk'); tx.select(); navigator.clipboard ? navigator.clipboard.writeText(tx.value).then(() => toast('Backup copied'), () => toast('Select the text and copy it')) : toast('Select the text and copy it'); break; }
+    case 'bk-restore': try { const d = JSON.parse(document.getElementById('bk').value); if (!Array.isArray(d.products) || !d.settings || !Array.isArray(d.discounts)) throw 0; S.data = d; save(); toast('Restored'); renderAdmin(); } catch (x) { toast('That text is not a valid backup'); } break;
+    case 'reset-seed': if (A.resetArm) { S.data = seedData(); S.cart = {}; save(); saveCart(); A.resetArm = false; toast('Sample data restored'); } else A.resetArm = true; renderAdmin(); break;
+  }
+});
+document.addEventListener('input', e => {
+  const el = e.target;
+  if (el.id === 'q') { S.filter.q = el.value; const g = document.getElementById('grid'); if (g) g.innerHTML = gridHtml(); }
+  if (el.id === 'a-q') { A.q = el.value; const pos = el.selectionStart; renderAdmin(); const n = document.getElementById('a-q'); n.focus(); n.setSelectionRange(pos, pos); }
+  if (el.id === 'f-hue' || el.id === 'f-notes') refreshFormFrame();
+});
+document.addEventListener('change', async e => {
+  const el = e.target, g = i => document.getElementById(i);
+  if (el.id === 'sort') { S.filter.sort = el.value; g('grid').innerHTML = gridHtml(); }
+  if (el.id === 'budget') { S.filter.budget = el.value; g('grid').innerHTML = gridHtml(); }
+  if (el.id === 'gift-oil') { S.giftOilId = el.value; refreshShop(); }
+  if (el.id === 'lp') { S.layer.p = el.value; layerResult(); }
+  if (el.id === 'lo') { S.layer.o = el.value; layerResult(); }
+  if (el.id === 'a-cat') { A.cat = el.value; renderAdmin(); }
+  if (el.id === 'a-tag') { A.tag = el.value; renderAdmin(); }
+  if (el.dataset.sel) { el.checked ? A.sel.add(el.dataset.sel) : A.sel.delete(el.dataset.sel); renderAdmin(); }
+  if (el.dataset.selall) { [...document.querySelectorAll('[data-sel]')].forEach(x => el.checked ? A.sel.add(x.dataset.sel) : A.sel.delete(x.dataset.sel)); renderAdmin(); }
+  if (el.id === 'nd-type') { A.newDisc.target = el.value; const keep = { n: g('nd-name').value, p: g('nd-pct').value }; renderAdmin(); g('nd-name').value = keep.n; g('nd-pct').value = keep.p; }
+  if (el.id === 'f-img' && el.files[0]) { try { draft.image = await resizeImage(el.files[0]); refreshFormFrame(); } catch (x) { toast('That image could not be read'); } }
+  if (el.id === 'f-cat' && draft) refreshFormFrame();
+  if (el.id && el.id.startsWith('s-') && g('s-wa')) {
+    const s = D().settings, num = (i, d) => { const v = +g(i).value; return v > 0 ? v : d; };
+    s.whatsapp = g('s-wa').value.replace(/\D/g, ''); s.campaignOn = g('s-on').checked;
+    s.ladder[0].min = num('s-t1', s.ladder[0].min); s.ladder[0].price = Math.max(0, +g('s-t1p').value || 0);
+    s.ladder[1].min = num('s-t2', s.ladder[1].min); s.ladder[2].min = num('s-t3', s.ladder[2].min); s.ladder[2].pct = Math.min(90, num('s-t3p', s.ladder[2].pct));
+    s.bundle.n = Math.max(2, Math.floor(num('s-bn', s.bundle.n))); s.bundle.pct = Math.min(90, num('s-bp', s.bundle.pct)); s.bundle.enabled = g('s-be').checked;
+    save(); renderAdmin(); toast('Saved');
+  }
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closeDrawer(); } });
+
+applyTheme();
+render();
+</script>
+
+</body></html>
